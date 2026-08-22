@@ -41,14 +41,27 @@ Implementar únicamente la pantalla `Hoy` con:
 - CTA `Empezar entrenamiento`;
 - navegación preparada para Hoy, Semana, Progreso y Perfil.
 
-## Fuera de alcance
+## Decisión de MVP funcional local-first
 
-- sesión activa y temporizador;
-- registro editable de series, repeticiones o peso;
-- historial y métricas;
-- persistencia local u offline;
-- autenticación, Supabase y backend;
-- despliegue productivo.
+El Sprint 1 queda como base visual de `Hoy`. El siguiente alcance es un MVP funcional local-first que permite completar el ciclo `Hoy → sesión activa → registro → cierre → Semana/Progreso`.
+
+- La sesión activa permite registrar peso en kg y repeticiones por serie, abandonar con confirmación, retomar tras recargar y cerrar una sesión.
+- El historial, la semana y el progreso se derivan de esos registros locales; los datos se guardan sólo en el navegador y dispositivo actual.
+- La navegación incluye destinos reales para `Hoy`, `Semana`, `Progreso` y `Perfil`; el perfil queda limitado a nombre opcional, equipo y reinicio seguro de datos locales.
+- La falta de rack sigue siendo una restricción visible y el press de pecho con barra no se habilita como opción predeterminada.
+- No se implementan autenticación, Supabase, backend, APIs, sincronización entre dispositivos ni dependencias nuevas para este MVP.
+
+El detalle de alcance, criterios, riesgos y release criteria vive en `docs/functional-mvp.md`.
+
+## Fuera de alcance del MVP funcional
+
+- temporizador, cronómetro, música, video, cámara o IA;
+- recomendaciones de peso, progresión, recuperación, dolor o salud;
+- rutinas generadas automáticamente, edición de planes o de sesiones históricas;
+- integraciones con wearables, Apple Health, calendario o notificaciones;
+- social, rankings, desafíos, gamificación o pagos;
+- assets de ejercicios sin licencia y atribución verificables;
+- analítica remota o despliegue productivo.
 
 ## Criterios de aceptación
 

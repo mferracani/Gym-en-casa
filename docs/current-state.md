@@ -27,6 +27,14 @@ Bootstrap del proyecto y Sprint 1 completados localmente el 22 de agosto de 2026
 - El contenido de rutina todavía necesita validación profesional antes de uso real.
 - Los destinos Semana, Progreso y Perfil están preparados visualmente pero quedan deshabilitados en este sprint.
 
+## MVP funcional en construcción
+
+- Se definió un MVP local-first que extiende la base de Sprint 1 con sesión activa, registro de series, repeticiones y peso, semana, progreso y perfil local mínimo.
+- La persistencia propuesta es almacenamiento local en el navegador; no se incorporan autenticación, Supabase, backend ni sincronización entre dispositivos.
+- La única rutina documentada en detalle continúa siendo `Pecho + bíceps`; el flujo puede implementarse sobre esa rutina mientras los demás días quedan como contenido pendiente, sin inventar entrenamiento.
+- La documentación ejecutable de alcance, criterios, riesgos y release criteria está en `docs/functional-mvp.md`.
+- Esta etapa no declara pruebas, lint, typecheck, build ni QA completados: requiere implementación y verificación posterior.
+
 ## Verificación
 
 - 3 tests del modelo mock en verde.

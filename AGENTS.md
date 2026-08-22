@@ -3,8 +3,10 @@
 ## Producto y alcance actual
 
 - Aplicación web mobile-first para acompañar entrenamiento de fuerza en casa.
-- El Sprint 1 implementa solamente la pantalla `Hoy` con datos mock locales.
-- No implementar sesión activa, historial, persistencia, autenticación, Supabase ni backend hasta que el alcance cambie explícitamente.
+- El MVP funcional local-first incluye `Hoy`, sesión guiada, `Semana`, `Progreso` y `Perfil`.
+- La única rutina editorial validada para el MVP es `Pecho + bíceps`; los demás días de fuerza deben mostrarse como contenido pendiente, sin inventar entrenamiento.
+- Sesiones, historial, perfil y agenda se persisten con un esquema versionado en `localStorage`.
+- No implementar autenticación, Supabase, backend, sincronización remota ni recomendaciones automáticas hasta que el alcance cambie explícitamente.
 - Español de Argentina, tono directo y cercano.
 
 ## Stack
@@ -13,7 +15,7 @@
 - React y TypeScript estricto.
 - Tailwind CSS 4.
 - Phosphor Icons como única librería visual de producción.
-- Datos mock tipados y centralizados en `src/data/`.
+- Catálogo y agenda tipados en `src/data/`, dominio puro en `src/domain/` y estado cliente en `src/state/`.
 
 ## Comandos obligatorios
 
@@ -35,6 +37,8 @@ Antes de cerrar un cambio funcional, ejecutar test, lint, typecheck y build.
 - Respetar `prefers-reduced-motion`.
 - Evitar estética de dashboard empresarial, cards innecesarias y efectos decorativos sin función.
 - La falta de rack es una restricción visible: no habilitar press de pecho con barra como opción predeterminada.
+- Las sesiones cerradas son snapshots inmutables; Semana y Progreso deben derivar sus estados de los registros locales.
+- Cualquier cambio del esquema persistido requiere versión, validación y pruebas de migración o recuperación.
 - No agregar dependencias de producción sin explicar primero su necesidad.
 
 ## Assets y licencias

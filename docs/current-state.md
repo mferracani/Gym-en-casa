@@ -2,52 +2,61 @@
 
 ## Fase
 
-Bootstrap del proyecto y Sprint 1 completados localmente el 22 de agosto de 2026.
+MVP funcional local-first completado y verificado localmente el 22 de agosto de 2026.
 
 ## Architecture & Stack
 
-- Next.js 16 con App Router.
-- React 19 y TypeScript estricto.
-- Tailwind CSS 4.
-- Phosphor Icons.
-- Datos mock locales en `src/data/training-plan.ts`.
-- Sin backend, autenticación ni persistencia.
+- Next.js 16 con App Router, React 19 y TypeScript estricto.
+- Tailwind CSS 4 para tokens globales y CSS Modules por superficie funcional.
+- Phosphor Icons como única librería visual de producción.
+- Catálogo, rutina y agenda seed tipados en `src/data/`.
+- Dominio puro en `src/domain/training/`: restricciones de equipo, sesiones, calendario, selectores y progreso.
+- Estado React con reducer y provider en `src/state/training/`.
+- Persistencia `localStorage` mediante envelope versionado `v1`, validación manual, recuperación ante datos corruptos y migración desde `v0`.
+- Sin backend, autenticación, Supabase, analítica ni sincronización entre dispositivos.
+
+## Producto implementado
+
+- `Hoy`: fecha real, estado semanal derivado, rutina disponible, retoma y acceso a progreso luego del cierre.
+- `Sesión guiada`: un ejercicio por vez, peso opcional en kg, repeticiones, registro/reapertura de series, pausa, navegación, confirmación de descarte, resumen y cierre.
+- `Semana`: agenda recurrente editable con fuerza, rutina publicada, recuperación, descanso y contenido pendiente.
+- `Progreso`: historial de sesiones, series, repeticiones, volumen, último registro y máximo peso por ejercicio.
+- `Perfil`: nombre, inventario de equipo, advertencia sin rack, aviso de almacenamiento local y restablecimiento en dos pasos.
+- Navegación real entre `Hoy`, `Semana`, `Progreso` y `Perfil`.
 
 ## Decisiones tomadas
 
-- Mock 1 es la referencia visual principal.
-- La portada del próximo entrenamiento concentra la jerarquía del Home.
-- El texto del brief manda sobre inconsistencias de los mocks: Hoy contiene `Pecho + bíceps` y la navegación incluye `Perfil`.
-- La ilustración anatómica queda como estado pendiente hasta contar con licencia verificable.
-- La restricción por falta de rack se muestra explícitamente.
-
-## Riesgos
-
-- La ausencia de una ilustración aprobada reduce la fidelidad literal respecto del mock.
-- El contenido de rutina todavía necesita validación profesional antes de uso real.
-- Los destinos Semana, Progreso y Perfil están preparados visualmente pero quedan deshabilitados en este sprint.
-
-## MVP funcional en construcción
-
-- Se definió un MVP local-first que extiende la base de Sprint 1 con sesión activa, registro de series, repeticiones y peso, semana, progreso y perfil local mínimo.
-- La persistencia propuesta es almacenamiento local en el navegador; no se incorporan autenticación, Supabase, backend ni sincronización entre dispositivos.
-- La única rutina documentada en detalle continúa siendo `Pecho + bíceps`; el flujo puede implementarse sobre esa rutina mientras los demás días quedan como contenido pendiente, sin inventar entrenamiento.
-- La documentación ejecutable de alcance, criterios, riesgos y release criteria está en `docs/functional-mvp.md`.
-- Esta etapa no declara pruebas, lint, typecheck, build ni QA completados: requiere implementación y verificación posterior.
+- El MVP es local-first: ningún servicio remoto es necesario para validar el ciclo de uso personal.
+- Una sesión guarda un snapshot de la rutina al comenzar; cambios posteriores de agenda o catálogo no reescriben el historial.
+- Sólo las series `completed` cuentan en métricas y volumen.
+- La agenda inicial asigna `Pecho + bíceps` únicamente al sábado. Los otros cuatro días de fuerza no inventan ejercicios.
+- No se implementa temporizador: el descanso se muestra como referencia editorial.
+- No se implementa PWA todavía: faltan íconos aprobados y un service worker correctamente versionado para prometer offline completo.
+- La ilustración anatómica permanece como estado pendiente hasta contar con licencia verificable.
 
 ## Verificación
 
-- 3 tests del modelo mock en verde.
-- ESLint sin errores.
-- TypeScript estricto sin errores.
-- Build de producción exitoso con webpack; Turbopack no se usa para el build porque el sandbox local bloquea su puerto interno de PostCSS.
-- QA visual aprobado en 390 × 844 y 1280 × 900.
-- CTA, estados disabled y consola del navegador verificados.
-- Evidencia: `design-qa.md` y `artifacts/`.
+- `npm test`: 21 tests en verde.
+- `npm run lint`: sin errores ni warnings.
+- `npm run typecheck`: TypeScript estricto en verde.
+- `npm run build`: build de producción exitoso con webpack; seis rutas estáticas generadas.
+- QA de flujo: iniciar → registrar `10 × 12,5 kg` → recargar → retomar → revisar → cerrar → reconciliar `125 kg` en Progreso.
+- QA de Semana: editar, guardar, recargar y restaurar un día; se corrigió el solapamiento de acciones sticky con la navegación inferior.
+- QA de Perfil: guardar nombre, recargar y restaurar; feedback de éxito visible.
+- QA responsive: `320 × 568`, `390 × 844` y `1280 × 900`, sin overflow horizontal.
+- Consola verificada en una pestaña nueva sin warnings ni errores.
+- Evidencia y criterios visuales: `design-qa.md`.
 
-## Próximos pasos
+## Riesgos y pendientes
 
-1. Cerrar QA del Sprint 1.
-2. Validar rutina y mensajes de seguridad con un profesional.
-3. Definir Sprint 2: sesión activa, peso, series y temporizador.
-4. Seleccionar fuentes visuales con licencia verificable.
+- La rutina y las indicaciones siguen siendo contenido de producto; requieren validación profesional antes de presentarse como guía de entrenamiento.
+- Faltan definir y validar los otros cuatro días de fuerza.
+- No hay backup: limpiar el navegador o cambiar de dispositivo elimina el historial local.
+- Faltan assets anatómicos o de ejecución con licencia y atribución verificables.
+
+## Próximos pasos recomendados
+
+1. Validar `Pecho + bíceps`, cues y mensajes de seguridad con un profesional.
+2. Documentar las otras cuatro rutinas antes de habilitarlas.
+3. Hacer una prueba personal de uso durante una semana y registrar fricciones reales.
+4. Recién después decidir si hacen falta PWA/offline completo, sincronización o backend.

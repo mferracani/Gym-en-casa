@@ -1,4 +1,15 @@
-# Design QA — Sprint 1 · Hoy
+# Design QA — Sprint 1 + MVP funcional
+
+## Verificación funcional del MVP — 22 de agosto de 2026
+
+- Viewports inspeccionados: `320 × 568`, `390 × 844` y `1280 × 900`; ninguno presenta overflow horizontal.
+- Flujo completo aprobado: iniciar sesión, registrar una serie, recargar, retomar, revisar, finalizar y reconciliar el resultado en Progreso.
+- Registro usado para reconciliación: `10 repeticiones × 12,5 kg = 125 kg`.
+- Semana aprobada con edición, guardado, recarga y restauración. Durante QA se detectó y corrigió que las acciones sticky podían quedar debajo de la navegación fija.
+- Perfil aprobado con guardado explícito, persistencia tras recarga, inventario de equipo y restricción sin rack.
+- Navegación activa, foco, targets táctiles, `aria-live`, confirmación de descarte y reduced motion verificados estructuralmente.
+- Consola final verificada en una pestaña nueva: sin warnings ni errores.
+- La sesión mantiene el foco semántico al cambiar de ejercicio sin dibujar un contorno decorativo sobre títulos no interactivos.
 
 ## Comparison target
 
@@ -42,11 +53,11 @@ No separate crop was needed after normalization: the CTA, muscle labels, safety 
 
 ## Interaction and console checks
 
-- Primary CTA: enabled and clickable.
-- CTA response: announces `La rutina está lista. El registro guiado se habilita en el Sprint 2.` without starting an out-of-scope session.
-- Future navigation: Semana, Progreso and Perfil are native disabled buttons with explanatory accessible names.
-- Primary navigation remains fixed and visible.
-- Browser console: no warnings or errors during the interaction pass.
+- El CTA de Hoy inicia o retoma una sesión real; después de cerrarla cambia a `Ver progreso`.
+- Semana, Progreso y Perfil son rutas navegables y reflejan el mismo estado persistido.
+- Una sesión activa conserva series luego de recargar; el resumen permite cerrar con pendientes sólo si existe al menos una serie registrada.
+- La navegación inferior permanece fija sin tapar las acciones de edición de Semana.
+- Browser console final: sin warnings ni errores.
 
 ## Comparison history
 
@@ -66,6 +77,6 @@ Post-fix evidence: `/Users/mac017/Documents/ChatGPT/App GYM/artifacts/design-com
 
 ## Remaining findings
 
-No actionable P0, P1 or P2 findings remain. The anatomy slot remains intentionally pending until a source with a verified license is selected.
+No actionable P0, P1 or P2 findings remain in the MVP local. The anatomy slot and four workout days remain intentionally pending until their sources and content are validated.
 
 final result: passed

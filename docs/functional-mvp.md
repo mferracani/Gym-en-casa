@@ -145,3 +145,14 @@ El acceso a almacenamiento local debe ocurrir sólo del lado cliente y manejar u
 4. Crear `Semana` y `Progreso` a partir de los mismos registros.
 5. Incorporar el perfil local mínimo y el reinicio seguro.
 6. Agregar tests de calendario, almacenamiento, cálculos y restricciones; realizar QA visual y de accesibilidad.
+
+## Estado de release local — 22 de agosto de 2026
+
+- Implementación funcional completada para las cinco superficies y el flujo principal.
+- Persistencia y retoma verificadas tras recarga.
+- Semana y Progreso reconciliados con los mismos logs de sesión.
+- Restricciones de equipo y falta de rack aplicadas en dominio y experiencia.
+- Tests, lint, typecheck y build en verde.
+- QA responsive y de consola completado; detalle en `design-qa.md`.
+
+El MVP queda listo para uso local personal. No implica validación profesional del contenido ni despliegue productivo.

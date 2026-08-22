@@ -209,9 +209,12 @@
 
 .editorActions {
   position: sticky;
-  bottom: calc(12px + env(safe-area-inset-bottom));
+  z-index: 5;
+  bottom: calc(88px + env(safe-area-inset-bottom));
   justify-content: flex-end;
-  padding-top: 24px;
+  padding: 12px 0;
+  background: rgb(251 248 243 / 96%);
+  backdrop-filter: blur(10px);
 }
 
 .cancelButton,

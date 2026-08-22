@@ -126,11 +126,14 @@
 .recordAction:focus-visible,
 .textAction:focus-visible,
 .dangerAction:focus-visible,
-.setRow input:focus-visible,
-.exerciseHeading h1:focus-visible,
-.summaryStage h1:focus-visible {
+.setRow input:focus-visible {
   outline: 3px solid var(--focus-ring);
   outline-offset: 3px;
+}
+
+.exerciseHeading h1:focus,
+.summaryStage h1:focus {
+  outline: none;
 }
 
 .pauseButton:disabled,

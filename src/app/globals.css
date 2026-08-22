@@ -12,6 +12,21 @@
   --accent-soft: #d98980;
   --border: #ded7ce;
   --white: #fffdf9;
+  --state-success: #47785e;
+  --state-success-surface: #e7f0e9;
+  --state-warning: #9a5a27;
+  --state-warning-surface: #f8ebd9;
+  --state-danger: #a83830;
+  --state-danger-surface: #f8e5e2;
+  --focus-ring: rgb(180 60 47 / 42%);
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --radius-control: 0.75rem;
+  --radius-panel: 0.875rem;
+  --shadow-nav: 0 -12px 30px rgb(40 38 36 / 5%);
 }
 
 * {
@@ -65,7 +80,15 @@ a {
 }
 
 .app-shell {
+  display: flex;
+  flex-direction: column;
   min-height: 100dvh;
+  background: var(--background);
+}
+
+.app-shell__content {
+  flex: 1 0 auto;
+  min-width: 0;
 }
 
 .today-page {
@@ -344,7 +367,7 @@ a {
 
 .primary-cta:focus-visible,
 .bottom-nav__item:focus-visible {
-  outline: 3px solid rgb(180 60 47 / 32%);
+  outline: 3px solid var(--focus-ring);
   outline-offset: 3px;
 }
 
@@ -522,7 +545,7 @@ a {
   margin: 0 auto;
   border-top: 1px solid var(--border);
   background: rgb(251 248 243 / 96%);
-  box-shadow: 0 -12px 30px rgb(40 38 36 / 5%);
+  box-shadow: var(--shadow-nav);
   backdrop-filter: blur(12px);
 }
 

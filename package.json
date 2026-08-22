@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "test": "node --test src/data/training-plan.test.ts"
+    "test": "find src -name '*.test.ts' -print0 | xargs -0 node --test"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",

@@ -235,6 +235,27 @@ a {
   background: var(--accent-soft);
 }
 
+.week-day--planned .week-day__status {
+  background: var(--muted);
+}
+
+.week-day--content-pending .week-day__date {
+  border-style: dashed;
+  border-color: var(--border);
+  background: transparent;
+}
+
+.week-day--in-progress .week-day__date {
+  border-color: var(--state-warning);
+  background: var(--state-warning-surface);
+  color: var(--state-warning);
+  font-weight: 700;
+}
+
+.week-day--in-progress .week-day__status {
+  background: var(--state-warning);
+}
+
 .week-day--today .week-day__label {
   color: var(--accent);
 }
@@ -260,6 +281,11 @@ a {
   gap: 16px;
   min-height: 350px;
   padding-top: 31px;
+}
+
+.workout-stage--single {
+  grid-template-columns: minmax(0, 42rem);
+  min-height: 290px;
 }
 
 .workout-stage::before {
@@ -531,6 +557,29 @@ a {
 
 .support-note--safety {
   background: var(--surface);
+}
+
+.support-note--storage {
+  grid-column: 1 / -1;
+  border-color: var(--state-warning);
+  background: var(--state-warning-surface);
+}
+
+.today-loading {
+  display: grid;
+  align-content: center;
+  min-height: 75dvh;
+}
+
+.today-loading h1 {
+  margin: 10px 0 0;
+  font-size: clamp(2.8rem, 13vw, 5rem);
+  letter-spacing: -0.06em;
+}
+
+.today-loading > p:last-child {
+  max-width: 34rem;
+  color: var(--muted);
 }
 
 .bottom-nav {

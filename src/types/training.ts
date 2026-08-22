@@ -1,8 +1,13 @@
-export type DayStatus = "completed" | "recovery" | "today" | "rest";
+export type DayStatus =
+  | "completed"
+  | "content-pending"
+  | "in-progress"
+  | "planned"
+  | "recovery"
+  | "today"
+  | "rest";
 
 export type MuscleRole = "principal" | "secundario";
-
-export type NavigationIcon = "home" | "calendar" | "progress" | "profile";
 
 export interface Exercise {
   id: string;
@@ -44,12 +49,4 @@ export interface WeekDay {
   date: number;
   status: DayStatus;
   activity: string;
-}
-
-export interface NavigationItem {
-  id: string;
-  label: string;
-  href: string;
-  icon: NavigationIcon;
-  available: boolean;
 }

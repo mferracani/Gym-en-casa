@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { navigationItems, todayPlan, weekPlan } from "./training-plan.ts";
+import { todayPlan } from "./training-plan.ts";
 
 test("el inicio concentra la información obligatoria del Sprint 1", () => {
   assert.equal(todayPlan.name, "Pecho + bíceps");
@@ -14,16 +14,6 @@ test("el inicio concentra la información obligatoria del Sprint 1", () => {
       { name: "Pecho", role: "principal" },
       { name: "Bíceps", role: "secundario" },
     ],
-  );
-});
-
-test("la semana y la navegación cubren todo el alcance visible", () => {
-  assert.equal(weekPlan.length, 7);
-  assert.equal(weekPlan.filter((day) => day.status === "completed").length, 4);
-  assert.equal(weekPlan.filter((day) => day.status === "today").length, 1);
-  assert.deepEqual(
-    navigationItems.map((item) => item.label),
-    ["Hoy", "Semana", "Progreso", "Perfil"],
   );
 });
 

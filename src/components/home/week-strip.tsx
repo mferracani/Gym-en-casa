@@ -11,7 +11,7 @@ export function WeekStrip({ days }: WeekStripProps) {
     <section aria-labelledby="week-title" className="week-strip" id="week">
       <div className="section-heading-row">
         <h2 id="week-title">Tu semana</h2>
-        <span>5 días de fuerza</span>
+        <span>Plan local</span>
       </div>
 
       <ol aria-label="Estado semanal de lunes a domingo" className="week-grid">

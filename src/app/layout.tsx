@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+
+import { TrainingProvider } from "@/state/training/training-provider";
+
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -13,7 +16,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es-AR">
-      <body>{children}</body>
+      <body>
+        <TrainingProvider>{children}</TrainingProvider>
+      </body>
     </html>
   );
 }

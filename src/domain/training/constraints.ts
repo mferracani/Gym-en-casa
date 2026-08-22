@@ -1,20 +1,34 @@
 import type {
+  EquipmentId,
   ExerciseDefinition,
   Profile,
   WorkoutTemplate,
 } from "./types.ts";
 
+export function getMissingExerciseEquipment(
+  exercise: ExerciseDefinition,
+  profile: Profile,
+): EquipmentId[] {
+  const missing = exercise.requiredEquipment.filter(
+    (equipment) => !profile.equipment[equipment],
+  );
+
+  if (
+    exercise.requiresRack &&
+    !profile.equipment.rack &&
+    !missing.includes("rack")
+  ) {
+    missing.push("rack");
+  }
+
+  return missing;
+}
+
 export function isExerciseAvailable(
   exercise: ExerciseDefinition,
   profile: Profile,
 ): boolean {
-  if (exercise.requiresRack && !profile.equipment.rack) {
-    return false;
-  }
-
-  return exercise.requiredEquipment.every(
-    (equipment) => profile.equipment[equipment],
-  );
+  return getMissingExerciseEquipment(exercise, profile).length === 0;
 }
 
 export function isWorkoutTemplateAvailable(

@@ -1,19 +1,17 @@
 "use client";
 
-import {
-  ArrowRight,
-  Barbell,
-  CheckCircle,
-  ShieldCheck,
-  WarningCircle,
-} from "@phosphor-icons/react";
+import { ArrowRight } from "@phosphor-icons/react/ArrowRight";
+import { Barbell } from "@phosphor-icons/react/Barbell";
+import { CheckCircle } from "@phosphor-icons/react/CheckCircle";
+import { ShieldCheck } from "@phosphor-icons/react/ShieldCheck";
+import { WarningCircle } from "@phosphor-icons/react/WarningCircle";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
-import { workoutTemplates } from "@/data/training-catalog";
+import { exerciseCatalog, workoutTemplates } from "@/data/training-catalog";
 import { todayPlan } from "@/data/training-plan";
 import { getWeekOverview } from "@/domain/training/selectors";
-import type { LocalDate } from "@/domain/training/types";
+import type { ExerciseSectionId, LocalDate } from "@/domain/training/types";
 import {
   localDateFromDate,
   parseLocalDate,
@@ -21,8 +19,10 @@ import {
 } from "@/lib/date/local-date";
 import { useTraining } from "@/state/training/use-training";
 import type { DayStatus, WeekDay } from "@/types/training";
+import type { MuscleSummary as MuscleSummaryType } from "@/types/training";
 
 import { MuscleSummary } from "./muscle-summary";
+import { RoutineExerciseGallery } from "./routine-exercise-gallery";
 import { WeekStrip } from "./week-strip";
 
 function capitalize(value: string) {
@@ -54,9 +54,13 @@ function activityLabel(
   if (day.kind === "rest") return "Descanso";
   if (day.kind === "recovery") return "Recuperación";
   if (!day.workoutTemplateId) return "Fuerza · contenido pendiente";
+  const template = workoutTemplates.find(
+    ({ id }) => id === day.workoutTemplateId,
+  );
+  const workoutName = template?.name ?? "Fuerza";
   return day.date === localDateFromDate(new Date())
-    ? "Pecho + bíceps · Hoy"
-    : "Pecho + bíceps · Planificado";
+    ? `${workoutName} · Hoy`
+    : `${workoutName} · Planificado`;
 }
 
 function statusForDay(
@@ -92,6 +96,54 @@ function toWeekDays(
   });
 }
 
+function muscleSummaryFor(
+  sectionId: ExerciseSectionId,
+  exercises: readonly { exerciseId: string; targetSets: number }[],
+): MuscleSummaryType[] {
+  const seriesByGroup = new Map<string, number>();
+
+  for (const plannedExercise of exercises) {
+    const definition = exerciseCatalog.find(
+      ({ id }) => id === plannedExercise.exerciseId,
+    );
+
+    if (!definition) continue;
+
+    const group =
+      sectionId === "chest-biceps"
+        ? definition.primaryMuscles.some((muscle) => muscle.includes("Pecho"))
+          ? "Pecho"
+          : "Bíceps"
+        : sectionId === "back-triceps"
+          ? definition.primaryMuscles.some((muscle) => muscle.includes("Tríceps"))
+            ? "Tríceps"
+            : "Espalda"
+          : sectionId === "shoulders"
+            ? "Hombros"
+            : "Abdominales";
+
+    seriesByGroup.set(
+      group,
+      (seriesByGroup.get(group) ?? 0) + plannedExercise.targetSets,
+    );
+  }
+
+  const orderBySection: Record<ExerciseSectionId, string[]> = {
+    "chest-biceps": ["Pecho", "Bíceps"],
+    "back-triceps": ["Espalda", "Tríceps"],
+    shoulders: ["Hombros"],
+    abs: ["Abdominales"],
+  };
+
+  return orderBySection[sectionId]
+    .filter((name) => seriesByGroup.has(name))
+    .map((name, index) => ({
+      name,
+      role: index === 0 ? "principal" : "secundario",
+      series: seriesByGroup.get(name) ?? 0,
+    }));
+}
+
 export function TodayScreen() {
   const router = useRouter();
   const { isHydrated, startWorkout, state, storageWarning } = useTraining();
@@ -107,6 +159,18 @@ export function TodayScreen() {
     (session) => session.scheduledFor === today,
   );
   const activeSession = state.activeSession;
+  const activeTemplate = activeSession
+    ? workoutTemplates.find(({ id }) => id === activeSession.templateId)
+    : undefined;
+  const displayExercises = activeSession?.exercises ?? template?.exercises ?? [];
+  const displaySectionId =
+    activeTemplate?.sectionId ??
+    template?.sectionId ??
+    exerciseCatalog.find(({ id }) => id === displayExercises[0]?.exerciseId)
+      ?.sectionId;
+  const muscleSummary = displaySectionId
+    ? muscleSummaryFor(displaySectionId, displayExercises)
+    : [];
   const displayWorkout = activeSession?.workoutName ?? completedToday?.workoutName ?? template?.name;
   const completedSets = activeSession?.exercises.reduce(
     (total, exercise) =>
@@ -258,8 +322,12 @@ export function TodayScreen() {
             </p>
           </div>
 
-          {displayWorkout ? <MuscleSummary muscles={todayPlan.muscles} /> : null}
+          {displayWorkout && displaySectionId && muscleSummary.length > 0 ? (
+            <MuscleSummary muscles={muscleSummary} sectionId={displaySectionId} />
+          ) : null}
         </section>
+
+        {template ? <RoutineExerciseGallery templateId={template.id} /> : null}
 
         <section aria-label="Recomendaciones para hoy" className="support-notes">
           <article className="support-note support-note--adaptation">
@@ -275,9 +343,11 @@ export function TodayScreen() {
             <div>
               <p>Seguridad</p>
               <h2>
-                {state.profile.equipment.rack
-                  ? "La rutina actual usa mancuernas aun cuando cargaste un rack."
-                  : todayPlan.safetyNotice}
+                {displaySectionId === "chest-biceps"
+                  ? state.profile.equipment.rack
+                    ? "La rutina actual usa mancuernas aun cuando cargaste un rack."
+                    : todayPlan.safetyNotice
+                  : "Empezá con una carga cómoda y frená si aparece dolor o pinzamiento."}
               </h2>
             </div>
           </article>

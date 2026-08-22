@@ -1,6 +1,9 @@
 "use client";
 
-import { FloppyDisk, HardDrive, ShieldWarning, Trash } from "@phosphor-icons/react";
+import { FloppyDisk } from "@phosphor-icons/react/FloppyDisk";
+import { HardDrive } from "@phosphor-icons/react/HardDrive";
+import { ShieldWarning } from "@phosphor-icons/react/ShieldWarning";
+import { Trash } from "@phosphor-icons/react/Trash";
 import { FormEvent, useState } from "react";
 
 import { defaultProfile } from "../../data/training-catalog.ts";

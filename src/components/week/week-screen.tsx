@@ -1,9 +1,13 @@
 "use client";
 
-import { CalendarDots, CheckCircle, PencilSimple, WarningCircle } from "@phosphor-icons/react";
+import { CalendarDots } from "@phosphor-icons/react/CalendarDots";
+import { CheckCircle } from "@phosphor-icons/react/CheckCircle";
+import { PencilSimple } from "@phosphor-icons/react/PencilSimple";
+import { WarningCircle } from "@phosphor-icons/react/WarningCircle";
 import { useMemo, useState } from "react";
 
-import { workoutTemplates } from "@/data/training-catalog";
+import { exerciseCatalog, workoutTemplates } from "@/data/training-catalog";
+import { getAvailableWorkoutTemplates } from "@/domain/training/constraints";
 import { getWeekOverview } from "@/domain/training/selectors";
 import type { WeeklyScheduleDay, Weekday } from "@/domain/training/types";
 import { localDateFromDate } from "@/lib/date/local-date";
@@ -21,11 +25,11 @@ const weekdayLabels: Record<Weekday, string> = {
   7: "Domingo",
 };
 
-type ScheduleChoice = "chest-biceps" | "strength-pending" | "recovery" | "rest";
+type ScheduleChoice = `template:${string}` | "strength-pending" | "recovery" | "rest";
 
 function scheduleChoiceFor(day: WeeklyScheduleDay): ScheduleChoice {
   return day.kind === "strength" && day.workoutTemplateId
-    ? "chest-biceps"
+    ? `template:${day.workoutTemplateId}`
     : day.kind === "strength"
       ? "strength-pending"
       : day.kind;
@@ -48,10 +52,17 @@ export function WeekScreen() {
     () => getWeekOverview(state.schedule, state.history, today),
     [state.history, state.schedule, today],
   );
-  const chestBicepsTemplate = workoutTemplates.find(
-    (template) => template.id === "chest-biceps-adaptation",
+  const availableTemplateIds = useMemo(
+    () =>
+      new Set(
+        getAvailableWorkoutTemplates(
+          workoutTemplates,
+          exerciseCatalog,
+          state.profile,
+        ).map(({ id }) => id),
+      ),
+    [state.profile],
   );
-
   function beginEditing() {
     setDraftSchedule(state.schedule.map((day) => ({ ...day })));
     setIsEditing(true);
@@ -70,16 +81,17 @@ export function WeekScreen() {
 
       let nextDay: WeeklyScheduleDay;
 
+      if (choice.startsWith("template:")) {
+        const templateId = choice.slice("template:".length);
+        const template = workoutTemplates.find(({ id }) => id === templateId);
+        nextDay = template
+          ? { weekday, kind: "strength", workoutTemplateId: template.id }
+          : { weekday, kind: "strength" };
+
+        return current.map((day) => (day.weekday === weekday ? nextDay : day));
+      }
+
       switch (choice) {
-        case "chest-biceps":
-          nextDay = chestBicepsTemplate
-            ? {
-                weekday,
-                kind: "strength",
-                workoutTemplateId: chestBicepsTemplate.id,
-              }
-            : { weekday, kind: "strength" };
-          break;
         case "strength-pending":
           nextDay = { weekday, kind: "strength" };
           break;
@@ -223,9 +235,18 @@ export function WeekScreen() {
                       }
                       value={scheduleChoiceFor(scheduledDay)}
                     >
-                      {chestBicepsTemplate ? (
-                        <option value="chest-biceps">{chestBicepsTemplate.name}</option>
-                      ) : null}
+                      {workoutTemplates.map((workoutTemplate) => (
+                        <option
+                          disabled={!availableTemplateIds.has(workoutTemplate.id)}
+                          key={workoutTemplate.id}
+                          value={`template:${workoutTemplate.id}`}
+                        >
+                          {workoutTemplate.name}
+                          {!availableTemplateIds.has(workoutTemplate.id)
+                            ? " · falta equipo"
+                            : ""}
+                        </option>
+                      ))}
                       <option value="strength-pending">Fuerza · contenido pendiente</option>
                       <option value="recovery">Recuperación</option>
                       <option value="rest">Descanso</option>

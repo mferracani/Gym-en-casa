@@ -1,19 +1,17 @@
 "use client";
 
-import {
-  CalendarDots,
-  ChartLineUp,
-  House,
-  UserCircle,
-} from "@phosphor-icons/react";
+import { Barbell } from "@phosphor-icons/react/Barbell";
+import { CalendarDots } from "@phosphor-icons/react/CalendarDots";
+import { ChartLineUp } from "@phosphor-icons/react/ChartLineUp";
+import { House } from "@phosphor-icons/react/House";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navigationItems = [
   { href: "/", icon: House, label: "Hoy" },
   { href: "/semana", icon: CalendarDots, label: "Semana" },
+  { href: "/ejercicios", icon: Barbell, label: "Ejercicios" },
   { href: "/progreso", icon: ChartLineUp, label: "Progreso" },
-  { href: "/perfil", icon: UserCircle, label: "Perfil" },
 ] as const;
 
 export function BottomNav() {

@@ -1,18 +1,30 @@
-import { PersonArmsSpread } from "@phosphor-icons/react";
+import Image from "next/image";
 
+import { muscleMapVisualsBySection } from "@/data/exercise-visuals";
+import type { ExerciseSectionId } from "@/domain/training/types";
 import type { MuscleSummary as MuscleSummaryType } from "@/types/training";
 
 interface MuscleSummaryProps {
   muscles: MuscleSummaryType[];
+  sectionId: ExerciseSectionId;
 }
 
-export function MuscleSummary({ muscles }: MuscleSummaryProps) {
+export function MuscleSummary({ muscles, sectionId }: MuscleSummaryProps) {
+  const muscleMapVisual = muscleMapVisualsBySection[sectionId];
+
   return (
     <aside aria-labelledby="muscle-summary-title" className="muscle-summary">
-      <div className="muscle-summary__visual" aria-hidden="true">
-        <span className="muscle-summary__index">02</span>
-        <PersonArmsSpread size={116} weight="thin" />
-        <span className="muscle-summary__pending">Recurso visual pendiente</span>
+      <div className="muscle-summary__visual">
+        <span aria-hidden="true" className="muscle-summary__index">02</span>
+        <Image
+          alt={muscleMapVisual.alt}
+          className="muscle-summary__image"
+          height={muscleMapVisual.height}
+          loading="eager"
+          sizes="(min-width: 720px) 280px, 42vw"
+          src={muscleMapVisual.src}
+          width={muscleMapVisual.width}
+        />
       </div>
 
       <div className="muscle-summary__content">

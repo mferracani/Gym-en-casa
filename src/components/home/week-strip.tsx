@@ -1,4 +1,4 @@
-import { Check } from "@phosphor-icons/react";
+import { Check } from "@phosphor-icons/react/Check";
 
 import type { WeekDay } from "@/types/training";
 

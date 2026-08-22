@@ -1,0 +1,221 @@
+{
+  "version": "catalog-v1-review",
+  "status": "pending-professional-validation",
+  "sections": [
+    {
+      "id": "chest-biceps",
+      "name": "Pecho + bíceps",
+      "muscleMap": "/images/exercises/chest-biceps-muscle-map.png",
+      "exercises": [
+        {
+          "id": "dumbbell-flat-press",
+          "name": "Press plano con mancuernas",
+          "primaryMuscles": "Pectoral mayor",
+          "secondaryMuscles": "Tríceps y deltoide anterior",
+          "equipment": "Mancuernas · Banco plano",
+          "image": "/images/exercises/dumbbell-flat-press.png",
+          "visualStatus": "Aprobada"
+        },
+        {
+          "id": "dumbbell-incline-press",
+          "name": "Press inclinado con mancuernas",
+          "primaryMuscles": "Pectoral mayor, énfasis clavicular",
+          "secondaryMuscles": "Tríceps y deltoide anterior",
+          "equipment": "Mancuernas · Banco inclinado",
+          "image": "/images/exercises/dumbbell-incline-press.png",
+          "visualStatus": "Aprobada"
+        },
+        {
+          "id": "dumbbell-fly",
+          "name": "Aperturas con mancuernas",
+          "primaryMuscles": "Pectoral mayor",
+          "secondaryMuscles": "Deltoide anterior",
+          "equipment": "Mancuernas · Banco plano",
+          "image": "/images/exercises/dumbbell-fly.png",
+          "visualStatus": "Aprobada"
+        },
+        {
+          "id": "seated-alternating-dumbbell-curl",
+          "name": "Curl alternado sentado con supinación",
+          "primaryMuscles": "Bíceps braquial",
+          "secondaryMuscles": "Braquial y braquiorradial",
+          "equipment": "Mancuernas · Banco plano",
+          "image": "/images/exercises/seated-alternating-dumbbell-curl-v2.png",
+          "visualStatus": "Nueva"
+        },
+        {
+          "id": "incline-dumbbell-curl",
+          "name": "Curl inclinado con mancuernas",
+          "primaryMuscles": "Bíceps braquial",
+          "secondaryMuscles": "Braquial",
+          "equipment": "Mancuernas · Banco a 45–60°",
+          "image": "/images/exercises/incline-dumbbell-curl.png",
+          "visualStatus": "Nueva"
+        },
+        {
+          "id": "hammer-curl",
+          "name": "Curl martillo",
+          "primaryMuscles": "Braquial y braquiorradial",
+          "secondaryMuscles": "Bíceps braquial",
+          "equipment": "Mancuernas",
+          "image": "/images/exercises/hammer-curl.png",
+          "visualStatus": "Aprobada"
+        },
+        {
+          "id": "concentration-curl",
+          "name": "Curl de concentración",
+          "primaryMuscles": "Bíceps braquial",
+          "secondaryMuscles": "Braquial",
+          "equipment": "Mancuerna · Banco plano",
+          "image": "/images/exercises/concentration-curl.png",
+          "visualStatus": "Nueva"
+        }
+      ]
+    },
+    {
+      "id": "back-triceps",
+      "name": "Espalda + tríceps",
+      "muscleMap": "/images/exercises/back-triceps-muscle-map.png",
+      "exercises": [
+        {
+          "id": "one-arm-dumbbell-row",
+          "name": "Remo a una mano apoyado en banco",
+          "primaryMuscles": "Dorsal ancho y romboides",
+          "secondaryMuscles": "Trapecio medio, bíceps y deltoide posterior",
+          "equipment": "Mancuerna · Banco plano",
+          "image": "/images/exercises/one-arm-dumbbell-row.png",
+          "visualStatus": "Nueva"
+        },
+        {
+          "id": "chest-supported-dumbbell-row",
+          "name": "Remo con pecho apoyado",
+          "primaryMuscles": "Romboides y trapecio medio",
+          "secondaryMuscles": "Dorsal ancho, bíceps y deltoide posterior",
+          "equipment": "Mancuernas · Banco a 30–45°",
+          "image": "/images/exercises/chest-supported-dumbbell-row.png",
+          "visualStatus": "Nueva"
+        },
+        {
+          "id": "lying-dumbbell-triceps-extension",
+          "name": "Extensión de tríceps acostado",
+          "primaryMuscles": "Tríceps braquial",
+          "secondaryMuscles": "Estabilizadores del hombro",
+          "equipment": "Mancuernas · Banco plano",
+          "image": "/images/exercises/lying-dumbbell-triceps-extension.png",
+          "visualStatus": "Nueva"
+        },
+        {
+          "id": "seated-overhead-dumbbell-triceps-extension",
+          "name": "Extensión de tríceps sobre la cabeza",
+          "primaryMuscles": "Tríceps, énfasis en porción larga",
+          "secondaryMuscles": "Core y estabilizadores escapulares",
+          "equipment": "Mancuerna · Banco plano, sentado",
+          "image": "/images/exercises/seated-overhead-dumbbell-triceps-extension.png",
+          "visualStatus": "Nueva"
+        },
+        {
+          "id": "bench-supported-triceps-kickback",
+          "name": "Patada de tríceps apoyada en banco",
+          "primaryMuscles": "Tríceps braquial",
+          "secondaryMuscles": "Deltoide posterior y core",
+          "equipment": "Mancuerna · Banco plano",
+          "image": "/images/exercises/bench-supported-triceps-kickback.png",
+          "visualStatus": "Nueva"
+        }
+      ]
+    },
+    {
+      "id": "shoulders",
+      "name": "Hombros",
+      "muscleMap": "/images/exercises/shoulders-muscle-map.png",
+      "exercises": [
+        {
+          "id": "seated-dumbbell-shoulder-press",
+          "name": "Press de hombros sentado",
+          "primaryMuscles": "Deltoide anterior y medio",
+          "secondaryMuscles": "Tríceps y serrato anterior",
+          "equipment": "Mancuernas · Banco a 70–80°",
+          "image": "/images/exercises/seated-dumbbell-shoulder-press.png",
+          "visualStatus": "Nueva"
+        },
+        {
+          "id": "seated-dumbbell-lateral-raise",
+          "name": "Elevación lateral sentada",
+          "primaryMuscles": "Deltoide medio",
+          "secondaryMuscles": "Supraespinoso y trapecio estabilizador",
+          "equipment": "Mancuernas · Banco plano",
+          "image": "/images/exercises/seated-dumbbell-lateral-raise.png",
+          "visualStatus": "Nueva"
+        },
+        {
+          "id": "incline-bench-reverse-fly",
+          "name": "Reverse fly con pecho apoyado",
+          "primaryMuscles": "Deltoide posterior",
+          "secondaryMuscles": "Romboides y trapecio medio",
+          "equipment": "Mancuernas · Banco inclinado",
+          "image": "/images/exercises/incline-bench-reverse-fly.png",
+          "visualStatus": "Nueva"
+        },
+        {
+          "id": "dumbbell-scaption",
+          "name": "Elevación en plano escapular",
+          "primaryMuscles": "Deltoide medio y anterior",
+          "secondaryMuscles": "Trapecio y serrato anterior",
+          "equipment": "Mancuernas",
+          "image": "/images/exercises/dumbbell-scaption.png",
+          "visualStatus": "Nueva"
+        }
+      ]
+    },
+    {
+      "id": "abs",
+      "name": "Abdominales",
+      "muscleMap": "/images/exercises/abs-muscle-map.png",
+      "exercises": [
+        {
+          "id": "suitcase-carry",
+          "name": "Caminata con mancuerna a un lado",
+          "primaryMuscles": "Oblicuos y core anti-inclinación",
+          "secondaryMuscles": "Antebrazo, glúteos y trapecio",
+          "equipment": "Una mancuerna · Espacio despejado",
+          "image": "/images/exercises/suitcase-carry.png",
+          "visualStatus": "Nueva"
+        },
+        {
+          "id": "incline-plank-dumbbell-drag",
+          "name": "Plancha inclinada con arrastre",
+          "primaryMuscles": "Oblicuos y transverso abdominal",
+          "secondaryMuscles": "Serrato y hombros",
+          "equipment": "Mancuerna · Banco plano",
+          "image": "/images/exercises/incline-plank-dumbbell-drag.png",
+          "visualStatus": "Nueva"
+        },
+        {
+          "id": "weighted-bench-crunch",
+          "name": "Crunch corto con mancuerna",
+          "primaryMuscles": "Recto abdominal",
+          "secondaryMuscles": "Oblicuos",
+          "equipment": "Mancuerna liviana · Banco plano",
+          "image": "/images/exercises/weighted-bench-crunch.png",
+          "visualStatus": "Nueva"
+        },
+        {
+          "id": "dumbbell-dead-bug",
+          "name": "Dead bug con mancuerna sostenida",
+          "primaryMuscles": "Core anti-extensión",
+          "secondaryMuscles": "Flexores de cadera y serrato",
+          "equipment": "Mancuerna muy liviana · Piso",
+          "image": "/images/exercises/dumbbell-dead-bug.png",
+          "visualStatus": "Nueva"
+        }
+      ]
+    }
+  ],
+  "excludedLegacyAssets": [
+    {
+      "id": "barbell-curl",
+      "name": "Curl de bíceps con barra",
+      "reason": "La imagen se conserva, pero el ejercicio queda fuera del catálogo nuevo porque requiere barra."
+    }
+  ]
+}

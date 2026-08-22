@@ -7,6 +7,7 @@ import {
 } from "../../data/training-catalog.ts";
 import {
   getAvailableWorkoutTemplates,
+  getMissingExerciseEquipment,
   isExerciseAvailable,
   isWorkoutTemplateAvailable,
 } from "./constraints.ts";
@@ -35,7 +36,7 @@ test("excluye ejercicios que requieren rack aunque haya barra", () => {
   assert.equal(isExerciseAvailable(barbellBenchPress, profileWithoutRack), false);
 });
 
-test("la plantilla inicial es compatible con el equipamiento sin rack", () => {
+test("las plantillas publicadas son compatibles con el equipamiento sin rack", () => {
   const chestBiceps = workoutTemplates.find(
     (template) => template.id === "chest-biceps-adaptation",
   );
@@ -51,6 +52,30 @@ test("la plantilla inicial es compatible con el equipamiento sin rack", () => {
       exerciseCatalog,
       profileWithoutRack,
     ).map((template) => template.id),
-    ["chest-biceps-adaptation"],
+    [
+      "chest-biceps-adaptation",
+      "back-triceps-adaptation",
+      "shoulders-video-adaptation",
+      "abs-adaptation",
+    ],
+  );
+});
+
+test("explica qué equipo falta antes de agregar un ejercicio", () => {
+  const inclinePress = exerciseCatalog.find(
+    (exercise) => exercise.id === "dumbbell-incline-press",
+  );
+  const profileWithoutAdjustableBench: Profile = {
+    ...profileWithoutRack,
+    equipment: {
+      ...profileWithoutRack.equipment,
+      "adjustable-bench": false,
+    },
+  };
+
+  assert.ok(inclinePress);
+  assert.deepEqual(
+    getMissingExerciseEquipment(inclinePress, profileWithoutAdjustableBench),
+    ["adjustable-bench"],
   );
 });

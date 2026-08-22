@@ -191,6 +191,19 @@
   font-size: 0.92rem;
 }
 
+.exerciseVisual {
+  position: relative;
+  width: min(100%, 350px);
+  aspect-ratio: 3 / 2;
+  margin: 22px 0 0;
+  overflow: hidden;
+  background: var(--background);
+}
+
+.exerciseVisualImage {
+  object-fit: contain;
+}
+
 .exerciseFacts {
   display: grid;
   gap: 8px;
@@ -489,6 +502,10 @@
 
   .exerciseStage::before {
     left: -44px;
+  }
+
+  .exerciseVisual {
+    width: min(100%, 560px);
   }
 
   .setRow {

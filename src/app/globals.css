@@ -429,8 +429,10 @@ a {
   color: var(--muted-soft);
 }
 
-.muscle-summary__visual svg {
-  margin-top: 12px;
+.muscle-summary__image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .muscle-summary__index {
@@ -441,17 +443,6 @@ a {
   font-size: 0.62rem;
   font-weight: 760;
   letter-spacing: 0.1em;
-}
-
-.muscle-summary__pending {
-  position: absolute;
-  right: 10px;
-  bottom: 9px;
-  left: 10px;
-  color: var(--muted);
-  font-size: 0.58rem;
-  line-height: 1.25;
-  text-align: center;
 }
 
 .muscle-summary__content {
@@ -512,6 +503,95 @@ a {
   font-size: 0.62rem;
   line-height: 1.25;
   text-transform: capitalize;
+}
+
+.routine-exercise-gallery {
+  margin-top: 36px;
+  border-top: 1px solid var(--border);
+}
+
+.routine-exercise-gallery__heading {
+  padding: 18px 0 16px;
+}
+
+.routine-exercise-gallery__heading h2 {
+  margin: 5px 0 0;
+  font-size: 1.22rem;
+  font-weight: 710;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+}
+
+.routine-exercise-gallery__heading > p:last-child {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
+.routine-exercise-gallery__list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  border-bottom: 1px solid var(--border);
+}
+
+.routine-exercise-gallery__item {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  min-height: 104px;
+  padding: 8px 0;
+}
+
+.routine-exercise-gallery__item + .routine-exercise-gallery__item {
+  border-top: 1px solid var(--border);
+}
+
+.routine-exercise-gallery__thumbnail {
+  display: grid;
+  width: 96px;
+  height: 80px;
+  place-items: center;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.routine-exercise-gallery__image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.routine-exercise-gallery__copy {
+  min-width: 0;
+}
+
+.routine-exercise-gallery__copy p {
+  margin: 0;
+  color: var(--accent-soft);
+  font-size: 0.62rem;
+  font-weight: 760;
+  letter-spacing: 0.1em;
+  line-height: 1;
+}
+
+.routine-exercise-gallery__copy h3 {
+  margin: 5px 0 0;
+  font-size: 0.92rem;
+  font-weight: 690;
+  letter-spacing: -0.018em;
+  line-height: 1.2;
+}
+
+.routine-exercise-gallery__copy span {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
 }
 
 .support-notes {
@@ -729,9 +809,40 @@ a {
     min-height: 300px;
   }
 
-  .muscle-summary__visual svg {
-    width: 176px;
-    height: 176px;
+  .routine-exercise-gallery {
+    margin-top: 54px;
+  }
+
+  .routine-exercise-gallery__heading {
+    padding: 24px 0 20px;
+  }
+
+  .routine-exercise-gallery__heading h2 {
+    font-size: 1.55rem;
+  }
+
+  .routine-exercise-gallery__heading > p:last-child {
+    font-size: 0.88rem;
+  }
+
+  .routine-exercise-gallery__item {
+    grid-template-columns: 132px minmax(0, 1fr);
+    gap: 20px;
+    min-height: 126px;
+    padding: 10px 0;
+  }
+
+  .routine-exercise-gallery__thumbnail {
+    width: 132px;
+    height: 102px;
+  }
+
+  .routine-exercise-gallery__copy h3 {
+    font-size: 1.05rem;
+  }
+
+  .routine-exercise-gallery__copy span {
+    font-size: 0.88rem;
   }
 
   .muscle-summary h3 {
@@ -788,6 +899,45 @@ a {
 
   .muscle-summary {
     padding-left: 10px;
+  }
+
+  .routine-exercise-gallery__item {
+    grid-template-columns: 84px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .routine-exercise-gallery__thumbnail {
+    width: 84px;
+    height: 72px;
+  }
+}
+
+@media (min-width: 960px) {
+  .routine-exercise-gallery__list {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 18px;
+    border-bottom: 0;
+  }
+
+  .routine-exercise-gallery__item {
+    display: block;
+    min-height: 0;
+    padding: 0;
+  }
+
+  .routine-exercise-gallery__item + .routine-exercise-gallery__item {
+    border-top: 0;
+  }
+
+  .routine-exercise-gallery__thumbnail {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+  }
+
+  .routine-exercise-gallery__copy {
+    margin-top: 12px;
   }
 }
 

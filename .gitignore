@@ -36,6 +36,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local design iterations and QA captures that are not part of the product
+/design/rejected/
+/design/qa/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

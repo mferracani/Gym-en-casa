@@ -33,11 +33,11 @@ export const todayPlan = {
       equipment: "Banco plano · Mancuernas",
     },
     {
-      id: "barbell-curl",
-      name: "Curl de bíceps con barra",
+      id: "seated-alternating-dumbbell-curl",
+      name: "Curl alternado sentado con supinación",
       sets: 3,
       repetitions: 10,
-      equipment: "Barra con discos",
+      equipment: "Mancuernas · Banco plano",
     },
     {
       id: "hammer-curl",

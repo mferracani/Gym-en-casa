@@ -1,6 +1,8 @@
 "use client";
 
-import { ChartLineUp, ClipboardText, TrendUp } from "@phosphor-icons/react";
+import { ChartLineUp } from "@phosphor-icons/react/ChartLineUp";
+import { ClipboardText } from "@phosphor-icons/react/ClipboardText";
+import { TrendUp } from "@phosphor-icons/react/TrendUp";
 
 import {
   getExerciseProgress,

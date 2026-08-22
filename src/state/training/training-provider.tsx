@@ -10,10 +10,12 @@ import {
 } from "react";
 
 import {
+  createSelectionWorkoutTemplate,
   createInitialAppState,
   exerciseCatalog,
   workoutTemplates,
 } from "../../data/training-catalog.ts";
+import { isWorkoutTemplateAvailable } from "../../domain/training/constraints.ts";
 import { createActiveSession, finishSession } from "../../domain/training/session.ts";
 import type {
   ActiveSession,
@@ -48,6 +50,7 @@ export type StartWorkoutResult =
         | "not-ready"
         | "content-pending"
         | "missing-template"
+        | "invalid-selection"
         | "equipment";
     };
 
@@ -67,6 +70,7 @@ export interface TrainingContextValue {
     scheduledFor?: LocalDate,
     templateId?: string,
   ) => StartWorkoutResult;
+  startWorkoutSelection: (exerciseIds: readonly string[]) => StartWorkoutResult;
   recordSet: (input: {
     exerciseId: string;
     setId: string;
@@ -211,6 +215,47 @@ export function TrainingProvider({ children }: { children: ReactNode }) {
     [dispatch, isHydrated, state.activeSession, state.profile, state.schedule],
   );
 
+  const startWorkoutSelection = useCallback(
+    (exerciseIds: readonly string[]): StartWorkoutResult => {
+      if (!isHydrated) {
+        return { ok: false, reason: "not-ready" };
+      }
+
+      if (state.activeSession) {
+        return { ok: true, session: state.activeSession };
+      }
+
+      let template;
+
+      try {
+        template = createSelectionWorkoutTemplate(exerciseIds);
+      } catch {
+        return { ok: false, reason: "invalid-selection" };
+      }
+
+      if (!isWorkoutTemplateAvailable(template, exerciseCatalog, state.profile)) {
+        return { ok: false, reason: "equipment" };
+      }
+
+      try {
+        const session = createActiveSession({
+          sessionId: createSessionId(),
+          scheduledFor: localDateFromDate(new Date()),
+          startedAt: new Date().toISOString(),
+          template,
+          exercises: exerciseCatalog,
+          profile: state.profile,
+        });
+
+        dispatch({ type: "session/start", session });
+        return { ok: true, session };
+      } catch {
+        return { ok: false, reason: "invalid-selection" };
+      }
+    },
+    [dispatch, isHydrated, state.activeSession, state.profile],
+  );
+
   const recordSet = useCallback(
     ({
       exerciseId,
@@ -316,6 +361,7 @@ export function TrainingProvider({ children }: { children: ReactNode }) {
       isHydrated,
       storageWarning,
       startWorkout,
+      startWorkoutSelection,
       recordSet,
       reopenSet,
       navigateExercise,
@@ -338,6 +384,7 @@ export function TrainingProvider({ children }: { children: ReactNode }) {
       resetLocalData,
       resumeWorkout,
       startWorkout,
+      startWorkoutSelection,
       state,
       storageWarning,
       updateProfile,

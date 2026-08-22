@@ -17,29 +17,32 @@ MVP funcional local-first completado y verificado localmente el 22 de agosto de 
 
 ## Producto implementado
 
-- `Hoy`: fecha real, estado semanal derivado, rutina disponible, retoma y acceso a progreso luego del cierre.
-- `Sesión guiada`: un ejercicio por vez, peso opcional en kg, repeticiones, registro/reapertura de series, pausa, navegación, confirmación de descarte, resumen y cierre.
-- `Semana`: agenda recurrente editable con fuerza, rutina publicada, recuperación, descanso y contenido pendiente.
+- `Hoy`: fecha real, estado semanal derivado, mapa muscular, resumen visual de la rutina asignada, inicio, retoma y acceso a progreso luego del cierre.
+- `Ejercicios`: biblioteca editable por `Pecho + bíceps`, `Espalda + tríceps`, `Hombros` y `Abdominales`; permite combinar ejercicios dentro de la sección activa y empezar una sesión respetando el orden de agregado.
+- `Sesión guiada`: un ejercicio por vez con su secuencia visual, peso opcional en kg, repeticiones, registro/reapertura de series, pausa, navegación, confirmación de descarte, resumen y cierre. Los 14 ejercicios derivados del video de hombros incluyen `Ver movimiento` con su segmento exacto de YouTube.
+- `Semana`: agenda recurrente editable; cada día admite cualquiera de los presets publicados, recuperación, descanso o contenido pendiente.
 - `Progreso`: historial de sesiones, series, repeticiones, volumen, último registro y máximo peso por ejercicio.
 - `Perfil`: nombre, inventario de equipo, advertencia sin rack, aviso de almacenamiento local y restablecimiento en dos pasos.
-- Navegación real entre `Hoy`, `Semana`, `Progreso` y `Perfil`.
+- Navegación real entre `Hoy`, `Semana`, `Ejercicios` y `Progreso`; `Perfil` permanece disponible en `/perfil`.
 
 ## Decisiones tomadas
 
 - El MVP es local-first: ningún servicio remoto es necesario para validar el ciclo de uso personal.
 - Una sesión guarda un snapshot de la rutina al comenzar; cambios posteriores de agenda o catálogo no reescriben el historial.
 - Sólo las series `completed` cuentan en métricas y volumen.
-- La agenda inicial asigna `Pecho + bíceps` únicamente al sábado. Los otros cuatro días de fuerza no inventan ejercicios.
+- La agenda inicial conserva su seed, pero el usuario puede asignar cualquier preset publicado a cualquier día.
 - No se implementa temporizador: el descanso se muestra como referencia editorial.
 - No se implementa PWA todavía: faltan íconos aprobados y un service worker correctamente versionado para prometer offline completo.
-- La ilustración anatómica permanece como estado pendiente hasta contar con licencia verificable.
+- Los assets fueron generados para el proyecto y centralizados mediante un mapping tipado; el press con barra que requiere rack queda fuera de la biblioteca editable.
+- El video fuente no se descarga ni se publica: el movimiento se reproduce con `youtube-nocookie.com`, sin autoplay, usando segmentos temporales aproximados.
+- Los 14 movimientos son opciones. El preset sugerido de hombros usa cuatro patrones complementarios y excluye el remo vertical y las variantes frontales redundantes.
 
 ## Verificación
 
-- `npm test`: 21 tests en verde.
+- `npm test`: 37 tests en verde.
 - `npm run lint`: sin errores ni warnings.
 - `npm run typecheck`: TypeScript estricto en verde.
-- `npm run build`: build de producción exitoso con webpack; seis rutas estáticas generadas.
+- `npm run build`: build de producción exitoso con webpack; seis rutas de producto estáticas más `_not-found`.
 - QA de flujo: iniciar → registrar `10 × 12,5 kg` → recargar → retomar → revisar → cerrar → reconciliar `125 kg` en Progreso.
 - QA de Semana: editar, guardar, recargar y restaurar un día; se corrigió el solapamiento de acciones sticky con la navegación inferior.
 - QA de Perfil: guardar nombre, recargar y restaurar; feedback de éxito visible.
@@ -50,13 +53,18 @@ MVP funcional local-first completado y verificado localmente el 22 de agosto de 
 ## Riesgos y pendientes
 
 - La rutina y las indicaciones siguen siendo contenido de producto; requieren validación profesional antes de presentarse como guía de entrenamiento.
-- Faltan definir y validar los otros cuatro días de fuerza.
+- El catálogo ya está integrado al flujo funcional, pero todavía necesita
+  validación profesional de técnica, cues y agrupaciones.
+- La sesión personalizada no se guarda aún como preset reutilizable ni puede
+  asignarse a un día; la semana permite asignar sólo los presets publicados.
 - No hay backup: limpiar el navegador o cambiar de dispositivo elimina el historial local.
-- Faltan assets anatómicos o de ejecución con licencia y atribución verificables.
+- Los assets generados requieren revisión de similitud y validación biomecánica profesional antes de una publicación externa.
 
 ## Próximos pasos recomendados
 
-1. Validar `Pecho + bíceps`, cues y mensajes de seguridad con un profesional.
-2. Documentar las otras cuatro rutinas antes de habilitarlas.
+1. Aprobar, reemplazar o descartar las nuevas láminas del catálogo integrado.
+2. Validar técnica, cues, agrupación y mensajes de seguridad con un profesional.
 3. Hacer una prueba personal de uso durante una semana y registrar fricciones reales.
-4. Recién después decidir si hacen falta PWA/offline completo, sincronización o backend.
+4. Decidir si vale la pena guardar rutinas personalizadas y asignarlas a días; en
+   ese caso, versionar y migrar explícitamente el almacenamiento local.
+5. Recién después decidir si hacen falta PWA/offline completo, sincronización o backend.

@@ -8,6 +8,11 @@ export type EquipmentId =
   | "rack";
 
 export type WorkoutKind = "strength" | "recovery" | "rest";
+export type ExerciseSectionId =
+  | "chest-biceps"
+  | "back-triceps"
+  | "shoulders"
+  | "abs";
 export type SessionStatus = "active" | "paused";
 export type SetStatus = "pending" | "completed" | "skipped";
 /** Monday-first index used by the editable recurring schedule (1 = Monday). */
@@ -15,12 +20,15 @@ export type Weekday = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
 export interface ExerciseDefinition {
   id: string;
+  sectionId: ExerciseSectionId;
   name: string;
   primaryMuscles: string[];
+  secondaryMuscles: string[];
   requiredEquipment: EquipmentId[];
   requiresRack?: boolean;
   defaultRestSeconds: number;
   safetyNote?: string;
+  techniqueCues: string[];
 }
 
 export interface PlannedExercise {
@@ -31,6 +39,7 @@ export interface PlannedExercise {
 
 export interface WorkoutTemplate {
   id: string;
+  sectionId: ExerciseSectionId;
   name: string;
   kind: "strength";
   estimatedMinutes: number;

@@ -1,22 +1,24 @@
 "use client";
 
-import {
-  ArrowLeft,
-  ArrowRight,
-  CheckCircle,
-  Clock,
-  Pause,
-  Play,
-  WarningCircle,
-  X,
-} from "@phosphor-icons/react";
+import { ArrowLeft } from "@phosphor-icons/react/ArrowLeft";
+import { ArrowRight } from "@phosphor-icons/react/ArrowRight";
+import { CheckCircle } from "@phosphor-icons/react/CheckCircle";
+import { Clock } from "@phosphor-icons/react/Clock";
+import { Pause } from "@phosphor-icons/react/Pause";
+import { Play } from "@phosphor-icons/react/Play";
+import { WarningCircle } from "@phosphor-icons/react/WarningCircle";
+import { X } from "@phosphor-icons/react/X";
+import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { getExerciseVisual } from "@/data/exercise-visuals";
+import { getExerciseMovement } from "@/data/exercise-movements";
 import { exerciseCatalog } from "@/data/training-catalog";
 import type { EquipmentId, SetLog } from "@/domain/training/types";
 import { useTraining } from "@/state/training/use-training";
 
+import { ExerciseMovementModal } from "./exercise-movement-modal";
 import styles from "./workout-session-screen.module.css";
 
 const equipmentLabels: Record<EquipmentId, string> = {
@@ -71,6 +73,12 @@ export function WorkoutSessionScreen() {
   const currentDefinition = currentExercise
     ? exerciseCatalogById.get(currentExercise.exerciseId)
     : undefined;
+  const currentExerciseVisual = currentExerciseId
+    ? getExerciseVisual(currentExerciseId)
+    : undefined;
+  const currentExerciseMovement = currentExerciseId
+    ? getExerciseMovement(currentExerciseId)
+    : undefined;
   const totalSets = session?.exercises.reduce(
     (total, exercise) => total + exercise.sets.length,
     0,
@@ -86,6 +94,12 @@ export function WorkoutSessionScreen() {
   const showRackWarning =
     currentDefinition?.primaryMuscles.includes("Pecho") &&
     !state.profile.equipment.rack;
+  const safetyMessage =
+    currentDefinition?.safetyNote ??
+    currentExerciseMovement?.editorialNote ??
+    (showRackWarning
+      ? "Sin rack: esta rutina evita el press de pecho con barra. Usá mancuernas."
+      : undefined);
 
   useEffect(() => {
     if (currentExerciseId) {
@@ -298,6 +312,18 @@ export function WorkoutSessionScreen() {
           <p>{currentExercise.targetSets} series · {currentExercise.targetReps} repeticiones</p>
         </div>
 
+        {currentExerciseVisual ? (
+          <figure className={styles.exerciseVisual}>
+            <Image
+              alt={currentExerciseVisual.alt}
+              className={styles.exerciseVisualImage}
+              fill
+              sizes="(min-width: 720px) 560px, (max-width: 370px) calc(100vw - 32px), (max-width: 390px) calc(100vw - 40px), 350px"
+              src={currentExerciseVisual.src}
+            />
+          </figure>
+        ) : null}
+
         <div className={styles.exerciseFacts}>
           <p>
             <strong>Equipo</strong>
@@ -309,10 +335,19 @@ export function WorkoutSessionScreen() {
           </p>
         </div>
 
-        {showRackWarning ? (
+        {currentDefinition && currentExerciseMovement ? (
+          <ExerciseMovementModal
+            movement={currentExerciseMovement}
+            muscleLabel={currentDefinition.primaryMuscles.join(" · ")}
+            techniqueCues={currentDefinition.techniqueCues}
+            title={currentExercise.name}
+          />
+        ) : null}
+
+        {safetyMessage ? (
           <aside className={styles.safetyNote}>
             <WarningCircle aria-hidden="true" size={22} weight="regular" />
-            <p>Sin rack: esta rutina evita el press de pecho con barra. Usá mancuernas.</p>
+            <p>{safetyMessage}</p>
           </aside>
         ) : null}
 

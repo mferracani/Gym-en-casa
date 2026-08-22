@@ -1,0 +1,241 @@
+.page {
+  width: min(100%, 720px);
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: calc(28px + env(safe-area-inset-top)) 20px
+    calc(112px + env(safe-area-inset-bottom));
+}
+
+.header {
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 760;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: clamp(2.3rem, 10vw, 3.35rem);
+  letter-spacing: -0.055em;
+  line-height: 0.95;
+}
+
+.header > p:last-child {
+  margin: 12px 0 0;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.loading,
+.storageNotice,
+.warning,
+.rackNotice,
+.dangerZone,
+.form {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-panel);
+}
+
+.loading {
+  padding: 20px;
+  color: var(--muted);
+  background: var(--surface);
+}
+
+.storageNotice,
+.rackNotice {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 14px;
+  background: var(--surface);
+}
+
+.storageNotice svg {
+  color: var(--accent);
+}
+
+.storageNotice p,
+.rackNotice p,
+.dangerZone p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.warning,
+.feedbackError {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  color: var(--state-danger);
+  background: var(--state-danger-surface);
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.form {
+  display: grid;
+  gap: 22px;
+  padding: 18px;
+  margin-top: 18px;
+  background: var(--white);
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.field label,
+.equipment legend {
+  font-size: 0.9rem;
+  font-weight: 720;
+}
+
+.field input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.field input:focus-visible,
+.equipmentOption:has(input:focus-visible),
+.saveButton:focus-visible,
+.resetButton:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.equipment {
+  padding: 0;
+  border: 0;
+}
+
+.equipment > p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.4;
+}
+
+.equipmentList {
+  display: grid;
+  margin-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.equipmentOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 52px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.equipmentOption span {
+  font-size: 0.93rem;
+}
+
+.equipmentOption input {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--accent);
+}
+
+.rackNotice {
+  border-color: #e2c7aa;
+  background: var(--state-warning-surface);
+}
+
+.rackNotice svg {
+  color: var(--state-warning);
+}
+
+.rackNotice strong {
+  color: var(--foreground);
+}
+
+.saveButton,
+.resetButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 48px;
+  padding: 0 16px;
+  border-radius: var(--radius-control);
+  cursor: pointer;
+  font-weight: 720;
+}
+
+.saveButton {
+  background: var(--accent);
+  color: var(--white);
+}
+
+.saveButton:hover {
+  background: var(--accent-dark);
+}
+
+.feedbackSuccess {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border: 1px solid #b9d2c0;
+  border-radius: var(--radius-control);
+  color: var(--state-success);
+  background: var(--state-success-surface);
+  font-size: 0.88rem;
+}
+
+.dangerZone {
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+  margin-top: 32px;
+  border-color: #e4c3bf;
+}
+
+.dangerZone h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.confirmation {
+  color: var(--state-danger) !important;
+  font-weight: 680;
+}
+
+.resetButton {
+  justify-self: start;
+  border: 1px solid #d5a29c;
+  background: transparent;
+  color: var(--state-danger);
+}
+
+.resetButton:hover {
+  background: var(--state-danger-surface);
+}
+
+@media (min-width: 720px) {
+  .page {
+    padding-inline: 44px;
+  }
+
+  .form {
+    padding: 24px;
+  }
+}

@@ -1,0 +1,733 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fbf8f3;
+  --surface: #f1ede6;
+  --surface-strong: #e7e0d7;
+  --foreground: #282624;
+  --muted: #726d68;
+  --muted-soft: #9d9690;
+  --accent: #b43c2f;
+  --accent-dark: #8f2f25;
+  --accent-soft: #d98980;
+  --border: #ded7ce;
+  --white: #fffdf9;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--background);
+  color: var(--foreground);
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family:
+    ui-sans-serif,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+a {
+  font: inherit;
+}
+
+button {
+  border: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.app-shell {
+  min-height: 100dvh;
+}
+
+.today-page {
+  width: min(100%, 1120px);
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: calc(24px + env(safe-area-inset-top)) 20px
+    calc(112px + env(safe-area-inset-bottom));
+}
+
+.page-intro {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.page-intro h1 {
+  margin: 0;
+  font-size: clamp(1.65rem, 7vw, 2.2rem);
+  font-weight: 650;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+}
+
+.page-intro p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 0.94rem;
+  line-height: 1.4;
+}
+
+.phase-label {
+  display: grid;
+  justify-items: end;
+  padding-bottom: 2px;
+  color: var(--accent);
+}
+
+.phase-label span {
+  color: var(--accent-soft);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+}
+
+.phase-label strong {
+  margin-top: 2px;
+  font-size: 0.72rem;
+  font-weight: 680;
+  line-height: 1.25;
+  text-align: right;
+}
+
+.week-strip {
+  margin-top: 25px;
+  padding: 16px 0 18px;
+  border-block: 1px solid var(--border);
+}
+
+.section-heading-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 11px;
+}
+
+.section-heading-row h2 {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.section-heading-row > span {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.week-day {
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+
+.week-day__label {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 650;
+}
+
+.week-day__date {
+  position: relative;
+  display: grid;
+  width: 37px;
+  height: 37px;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.week-day__date svg {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  display: grid;
+  width: 15px;
+  height: 15px;
+  padding: 2px;
+  border-radius: 50%;
+  background: var(--foreground);
+  color: var(--white);
+}
+
+.week-day__status {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.week-day--completed .week-day__date {
+  border-color: var(--border);
+  background: transparent;
+  color: var(--foreground);
+}
+
+.week-day--recovery .week-day__status {
+  background: var(--accent-soft);
+}
+
+.week-day--today .week-day__label {
+  color: var(--accent);
+}
+
+.week-day--today .week-day__date {
+  width: 41px;
+  height: 41px;
+  margin-block: -2px;
+  background: var(--accent);
+  color: var(--white);
+  font-weight: 700;
+  box-shadow: 0 8px 20px rgb(180 60 47 / 24%);
+}
+
+.week-day--today .week-day__status {
+  background: var(--accent);
+}
+
+.workout-stage {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(128px, 0.92fr);
+  gap: 16px;
+  min-height: 350px;
+  padding-top: 31px;
+}
+
+.workout-stage::before {
+  position: absolute;
+  top: 18px;
+  left: -20px;
+  width: 4px;
+  height: 44px;
+  background: var(--accent);
+  content: "";
+}
+
+.workout-stage__copy {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 760;
+  letter-spacing: 0.105em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.workout-stage h2 {
+  margin: 10px 0 0;
+  font-size: clamp(2.75rem, 12.5vw, 5.25rem);
+  font-weight: 760;
+  letter-spacing: -0.065em;
+  line-height: 0.88;
+}
+
+.workout-stage h2 span {
+  display: block;
+}
+
+.workout-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 19px 0 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.workout-scheme {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 5px;
+  margin: 13px 0 0;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.workout-scheme strong {
+  color: var(--accent);
+  font-size: 1.15rem;
+}
+
+.primary-cta {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  gap: 8px;
+  width: min(100%, 244px);
+  min-height: 55px;
+  padding: 0 14px;
+  margin-top: 20px;
+  border-radius: 15px;
+  background: var(--accent);
+  color: var(--white);
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 720;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+  box-shadow: 0 12px 28px rgb(143 47 37 / 18%);
+  transition:
+    background-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.primary-cta > svg {
+  display: none;
+}
+
+.primary-cta:hover {
+  background: var(--accent-dark);
+  box-shadow: 0 14px 32px rgb(143 47 37 / 25%);
+  transform: translateY(-1px);
+}
+
+.primary-cta:active {
+  box-shadow: 0 6px 16px rgb(143 47 37 / 18%);
+  transform: translateY(1px);
+}
+
+.primary-cta:focus-visible,
+.bottom-nav__item:focus-visible {
+  outline: 3px solid rgb(180 60 47 / 32%);
+  outline-offset: 3px;
+}
+
+.cta-feedback {
+  max-width: 245px;
+  min-height: 32px;
+  margin: 9px 0 0;
+  color: transparent;
+  font-size: 0.7rem;
+  line-height: 1.35;
+  transition: color 160ms ease;
+}
+
+.cta-feedback.is-visible {
+  color: var(--muted);
+}
+
+.muscle-summary {
+  align-self: stretch;
+  min-width: 0;
+  padding-left: 14px;
+  border-left: 1px solid var(--border);
+}
+
+.muscle-summary__visual {
+  position: relative;
+  display: grid;
+  min-height: 193px;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 48% 48% 18px 18px;
+  background: var(--surface);
+  color: var(--muted-soft);
+}
+
+.muscle-summary__visual svg {
+  margin-top: 12px;
+}
+
+.muscle-summary__index {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: var(--accent-soft);
+  font-size: 0.62rem;
+  font-weight: 760;
+  letter-spacing: 0.1em;
+}
+
+.muscle-summary__pending {
+  position: absolute;
+  right: 10px;
+  bottom: 9px;
+  left: 10px;
+  color: var(--muted);
+  font-size: 0.58rem;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.muscle-summary__content {
+  margin-top: 14px;
+}
+
+.muscle-summary__eyebrow {
+  margin: 0;
+  color: var(--accent);
+  font-size: 0.58rem;
+  font-weight: 760;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.muscle-summary h3 {
+  margin: 4px 0 0;
+  font-size: 0.86rem;
+  font-weight: 690;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.muscle-list {
+  display: grid;
+  gap: 10px;
+  margin: 13px 0 0;
+}
+
+.muscle-list__item {
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr);
+  gap: 7px;
+  align-items: start;
+}
+
+.muscle-list__marker {
+  width: 8px;
+  height: 8px;
+  margin-top: 3px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+.muscle-list__marker--secundario {
+  background: var(--accent-soft);
+}
+
+.muscle-list dt {
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.muscle-list dd {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 0.62rem;
+  line-height: 1.25;
+  text-transform: capitalize;
+}
+
+.support-notes {
+  display: grid;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.support-note {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  min-height: 61px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.support-note svg {
+  color: var(--accent);
+}
+
+.support-note p,
+.support-note h2 {
+  margin: 0;
+}
+
+.support-note p {
+  color: var(--accent);
+  font-size: 0.62rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.support-note h2 {
+  margin-top: 2px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  line-height: 1.32;
+}
+
+.support-note--safety {
+  background: var(--surface);
+}
+
+.bottom-nav {
+  position: fixed;
+  z-index: 10;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: min(100%, 1120px);
+  min-height: calc(78px + env(safe-area-inset-bottom));
+  padding: 7px 10px env(safe-area-inset-bottom);
+  margin: 0 auto;
+  border-top: 1px solid var(--border);
+  background: rgb(251 248 243 / 96%);
+  box-shadow: 0 -12px 30px rgb(40 38 36 / 5%);
+  backdrop-filter: blur(12px);
+}
+
+.bottom-nav ul {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.bottom-nav li {
+  display: grid;
+}
+
+.bottom-nav__item {
+  position: relative;
+  display: grid;
+  min-width: 44px;
+  min-height: 62px;
+  place-items: center;
+  align-content: center;
+  gap: 4px;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.68rem;
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease;
+}
+
+.bottom-nav__item:hover:not(:disabled) {
+  background: var(--surface);
+}
+
+.bottom-nav__item.is-active {
+  color: var(--accent);
+  font-weight: 680;
+}
+
+.bottom-nav__item:disabled {
+  color: #847e78;
+  cursor: not-allowed;
+  opacity: 0.72;
+}
+
+.bottom-nav__icon-wrap {
+  position: relative;
+  display: inline-grid;
+}
+
+.bottom-nav__lock {
+  position: absolute;
+  right: -6px;
+  bottom: -2px;
+  padding: 1px;
+  border-radius: 50%;
+  background: var(--background);
+}
+
+@media (min-width: 720px) {
+  .today-page {
+    padding: 46px 44px 132px;
+  }
+
+  .page-intro h1 {
+    font-size: 2.35rem;
+  }
+
+  .phase-label strong {
+    font-size: 0.85rem;
+  }
+
+  .week-strip {
+    margin-top: 34px;
+  }
+
+  .week-grid {
+    gap: 12px;
+  }
+
+  .workout-stage {
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 54px;
+    min-height: 505px;
+    padding-top: 48px;
+  }
+
+  .workout-stage::before {
+    top: 34px;
+    left: -44px;
+    height: 58px;
+  }
+
+  .workout-stage h2 {
+    margin-top: 16px;
+  }
+
+  .workout-meta,
+  .workout-scheme {
+    font-size: 1rem;
+  }
+
+  .primary-cta {
+    grid-template-columns: auto 1fr auto;
+    width: 292px;
+    min-height: 60px;
+    margin-top: 28px;
+    padding-inline: 18px;
+    font-size: 0.94rem;
+    text-align: left;
+    white-space: normal;
+  }
+
+  .primary-cta > svg {
+    display: block;
+  }
+
+  .cta-feedback {
+    max-width: 292px;
+    font-size: 0.78rem;
+  }
+
+  .muscle-summary {
+    padding-left: 28px;
+  }
+
+  .muscle-summary__visual {
+    min-height: 300px;
+  }
+
+  .muscle-summary__visual svg {
+    width: 176px;
+    height: 176px;
+  }
+
+  .muscle-summary h3 {
+    font-size: 1.05rem;
+  }
+
+  .muscle-list dt {
+    font-size: 0.86rem;
+  }
+
+  .muscle-list dd {
+    font-size: 0.72rem;
+  }
+
+  .support-notes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 10px;
+  }
+
+  .bottom-nav {
+    right: 24px;
+    bottom: 18px;
+    left: 24px;
+    width: min(calc(100% - 48px), 720px);
+    min-height: 76px;
+    padding: 7px 12px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+  }
+}
+
+@media (max-width: 370px) {
+  .today-page {
+    padding-inline: 16px;
+  }
+
+  .workout-stage {
+    grid-template-columns: minmax(0, 1fr) 122px;
+    gap: 10px;
+  }
+
+  .workout-stage::before {
+    left: -16px;
+  }
+
+  .workout-stage h2 {
+    font-size: 2.55rem;
+  }
+
+  .primary-cta {
+    padding-inline: 11px;
+    font-size: 0.76rem;
+  }
+
+  .muscle-summary {
+    padding-left: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

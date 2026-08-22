@@ -5,7 +5,14 @@ import type {
   WeeklyScheduleDay,
   WorkoutTemplate,
 } from "../domain/training/types.ts";
-import { shoulderVideoMovements } from "./exercise-movements.ts";
+import {
+  chestVideoMovements,
+  shoulderVideoMovements,
+} from "./exercise-movements.ts";
+
+export const chestVideoExerciseIds: string[] = chestVideoMovements.map(
+  ({ exerciseId }) => exerciseId,
+);
 
 export const shoulderVideoExerciseIds: string[] = shoulderVideoMovements.map(
   ({ exerciseId }) => exerciseId,
@@ -52,6 +59,130 @@ export const exerciseCatalog: ExerciseDefinition[] = [
       "Conservá una flexión suave de codos.",
       "Abrí sólo hasta un rango cómodo.",
       "Cerrá con control, sin golpear las mancuernas.",
+    ],
+  },
+  {
+    id: "incline-dumbbell-fly-press",
+    sectionId: "chest-biceps",
+    name: "Aperturas + press inclinado",
+    primaryMuscles: ["Pecho"],
+    secondaryMuscles: ["Tríceps", "Deltoide anterior"],
+    requiredEquipment: ["dumbbells", "adjustable-bench"],
+    defaultRestSeconds: 90,
+    safetyNote:
+      "Combinación avanzada: usá poco peso y cambiá al press inclinado simple si perdés control.",
+    techniqueCues: [
+      "Apoyá la espalda y fijá los omóplatos en el banco.",
+      "Abrí con codos suaves y volvé al centro con control.",
+      "Desde el centro, bajá y completá el press sin chocar las mancuernas.",
+    ],
+  },
+  {
+    id: "dumbbell-floor-press",
+    sectionId: "chest-biceps",
+    name: "Press de pecho con mancuernas en el piso",
+    primaryMuscles: ["Pecho"],
+    secondaryMuscles: ["Tríceps", "Deltoide anterior"],
+    requiredEquipment: ["dumbbells"],
+    defaultRestSeconds: 90,
+    techniqueCues: [
+      "Apoyá espalda, cabeza y pies con estabilidad.",
+      "Bajá hasta que los brazos toquen suavemente el piso.",
+      "Mantené las muñecas sobre los codos durante el press.",
+    ],
+  },
+  {
+    id: "decline-dumbbell-floor-press",
+    sectionId: "chest-biceps",
+    name: "Press declinado con cadera elevada",
+    primaryMuscles: ["Pecho"],
+    secondaryMuscles: ["Tríceps", "Deltoide anterior", "Glúteos"],
+    requiredEquipment: ["dumbbells", "flat-bench"],
+    defaultRestSeconds: 90,
+    safetyNote:
+      "El banco debe estar trabado. Bajá la cadera y cortá la serie si no podés sostener el puente.",
+    techniqueCues: [
+      "Apoyá los pies en el banco y elevá la cadera antes de presionar.",
+      "Conservá hombros y cabeza firmes en el piso.",
+      "Mové las mancuernas sin perder la altura de la cadera.",
+    ],
+  },
+  {
+    id: "dumbbell-floor-fly",
+    sectionId: "chest-biceps",
+    name: "Aperturas con mancuernas en el piso",
+    primaryMuscles: ["Pecho"],
+    secondaryMuscles: ["Deltoide anterior"],
+    requiredEquipment: ["dumbbells"],
+    defaultRestSeconds: 60,
+    safetyNote:
+      "Usá una carga liviana y frená si aparece dolor punzante en el hombro.",
+    techniqueCues: [
+      "Conservá una flexión suave y fija en los codos.",
+      "Abrí hasta tocar suavemente el piso con los brazos.",
+      "Cerrá como si abrazaras un barril, sin golpear las mancuernas.",
+    ],
+  },
+  {
+    id: "dumbbell-handle-push-up",
+    sectionId: "chest-biceps",
+    name: "Flexiones sobre mancuernas",
+    primaryMuscles: ["Pecho"],
+    secondaryMuscles: ["Tríceps", "Deltoide anterior", "Core"],
+    requiredEquipment: ["dumbbells"],
+    defaultRestSeconds: 75,
+    safetyNote:
+      "Sólo con mancuernas hexagonales apoyadas de forma estable. Las mancuernas redondas pueden rodar.",
+    techniqueCues: [
+      "Alineá cabeza, espalda y piernas en un solo bloque.",
+      "Sujetá las mancuernas firmes con muñecas neutras.",
+      "Bajá el pecho entre los apoyos sin dejar caer la cadera.",
+    ],
+  },
+  {
+    id: "dumbbell-pullover-to-press",
+    sectionId: "chest-biceps",
+    name: "Pullover a press con mancuernas",
+    primaryMuscles: ["Pecho"],
+    secondaryMuscles: ["Dorsal ancho", "Serrato anterior", "Tríceps"],
+    requiredEquipment: ["dumbbells"],
+    defaultRestSeconds: 90,
+    safetyNote:
+      "Combinación avanzada: acortá el pullover si el hombro se despega, molesta o pierde control.",
+    techniqueCues: [
+      "Mantené costillas y zona lumbar controladas contra el piso.",
+      "Llevá las mancuernas atrás sólo hasta un rango cómodo.",
+      "Volvé sobre el pecho y completá el press sin usar impulso.",
+    ],
+  },
+  {
+    id: "close-grip-dumbbell-floor-press",
+    sectionId: "chest-biceps",
+    name: "Press cerrado con mancuernas en el piso",
+    primaryMuscles: ["Pecho", "Tríceps"],
+    secondaryMuscles: ["Deltoide anterior"],
+    requiredEquipment: ["dumbbells"],
+    defaultRestSeconds: 75,
+    techniqueCues: [
+      "Mantené las mancuernas juntas sobre el centro del pecho.",
+      "Bajá con los codos cerca del torso.",
+      "Presioná sin chocar ni perder el agarre neutro.",
+    ],
+  },
+  {
+    id: "staggered-dumbbell-push-up",
+    sectionId: "chest-biceps",
+    name: "Flexión escalonada con mancuerna",
+    primaryMuscles: ["Pecho"],
+    secondaryMuscles: ["Tríceps", "Deltoide anterior", "Core"],
+    requiredEquipment: ["dumbbells"],
+    defaultRestSeconds: 75,
+    safetyNote:
+      "Variante avanzada: usá una mancuerna hexagonal estable y repetí la misma cantidad con cada apoyo.",
+    techniqueCues: [
+      "Apoyá una mano en la mancuerna y la otra en el piso.",
+      "Mantené hombros y cadera alineados durante la flexión.",
+      "Completá ambos lados sin acelerar el cambio de apoyo.",
     ],
   },
   {
@@ -505,6 +636,24 @@ export const workoutTemplates: WorkoutTemplate[] = [
       { exerciseId: "dumbbell-flat-press", targetSets: 3, targetReps: 10 },
       { exerciseId: "dumbbell-incline-press", targetSets: 3, targetReps: 10 },
       { exerciseId: "dumbbell-fly", targetSets: 3, targetReps: 10 },
+      {
+        exerciseId: "seated-alternating-dumbbell-curl",
+        targetSets: 3,
+        targetReps: 10,
+      },
+      { exerciseId: "hammer-curl", targetSets: 3, targetReps: 10 },
+    ],
+  },
+  {
+    id: "chest-video-adaptation",
+    sectionId: "chest-biceps",
+    name: "Pecho + bíceps · selección video",
+    kind: "strength",
+    estimatedMinutes: 55,
+    exercises: [
+      { exerciseId: "dumbbell-floor-press", targetSets: 3, targetReps: 10 },
+      { exerciseId: "dumbbell-incline-press", targetSets: 3, targetReps: 10 },
+      { exerciseId: "dumbbell-floor-fly", targetSets: 2, targetReps: 12 },
       {
         exerciseId: "seated-alternating-dumbbell-curl",
         targetSets: 3,

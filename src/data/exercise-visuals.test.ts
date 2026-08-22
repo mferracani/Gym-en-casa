@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import { existsSync } from "node:fs";
+import path from "node:path";
 import test from "node:test";
 
 import {
@@ -7,7 +9,11 @@ import {
   getExerciseVisual,
   muscleMapVisualsBySection,
 } from "./exercise-visuals.ts";
-import { workoutTemplates } from "./training-catalog.ts";
+import {
+  chestVideoExerciseIds,
+  shoulderVideoExerciseIds,
+  workoutTemplates,
+} from "./training-catalog.ts";
 
 test("cada ejercicio de la rutina editorial tiene un visual asociado", () => {
   const exerciseIds = workoutTemplates[0].exercises.map(
@@ -90,6 +96,28 @@ test("todos los ejercicios publicados en una rutina tienen una guía visual", ()
 
   assert.equal(
     [...exerciseIds].every((exerciseId) => getExerciseVisual(exerciseId) !== undefined),
+    true,
+  );
+});
+
+test("todos los movimientos extraídos de videos tienen una lámina propia", () => {
+  const videoExerciseIds = [
+    ...shoulderVideoExerciseIds,
+    ...chestVideoExerciseIds,
+  ];
+
+  assert.equal(videoExerciseIds.length, 22);
+  assert.equal(
+    videoExerciseIds.every((exerciseId) => getExerciseVisual(exerciseId) !== undefined),
+    true,
+  );
+  assert.equal(
+    videoExerciseIds.every((exerciseId) => {
+      const visual = getExerciseVisual(exerciseId);
+      return visual
+        ? existsSync(path.join(process.cwd(), "public", visual.src))
+        : false;
+    }),
     true,
   );
 });

@@ -18,8 +18,8 @@ MVP funcional local-first completado y verificado localmente el 22 de agosto de 
 ## Producto implementado
 
 - `Hoy`: fecha real, estado semanal derivado, mapa muscular, resumen visual de la rutina asignada, inicio, retoma y acceso a progreso luego del cierre.
-- `Ejercicios`: biblioteca editable por `Pecho + bíceps`, `Espalda + tríceps`, `Hombros` y `Abdominales`; permite combinar ejercicios dentro de la sección activa y empezar una sesión respetando el orden de agregado.
-- `Sesión guiada`: un ejercicio por vez con su secuencia visual, peso opcional en kg, repeticiones, registro/reapertura de series, pausa, navegación, confirmación de descarte, resumen y cierre. Los 14 ejercicios derivados del video de hombros incluyen `Ver movimiento` con su segmento exacto de YouTube.
+- `Ejercicios`: biblioteca editable por `Pecho + bíceps`, `Espalda + tríceps`, `Hombros` y `Abdominales`; permite combinar ejercicios dentro de la sección activa, aplicar una sugerencia con confirmación visible y empezar una sesión respetando el orden de agregado. Si ya hay una sesión activa, la acción principal permite retomarla.
+- `Sesión guiada`: un ejercicio por vez con su secuencia visual, peso opcional en kg, repeticiones, registro/reapertura de series, pausa, navegación, confirmación de descarte, resumen y cierre. Los 14 ejercicios derivados del video de hombros y los 8 de pecho incluyen `Ver movimiento` con su segmento exacto de YouTube.
 - `Semana`: agenda recurrente editable; cada día admite cualquiera de los presets publicados, recuperación, descanso o contenido pendiente.
 - `Progreso`: historial de sesiones, series, repeticiones, volumen, último registro y máximo peso por ejercicio.
 - `Perfil`: nombre, inventario de equipo, advertencia sin rack, aviso de almacenamiento local y restablecimiento en dos pasos.
@@ -34,12 +34,13 @@ MVP funcional local-first completado y verificado localmente el 22 de agosto de 
 - No se implementa temporizador: el descanso se muestra como referencia editorial.
 - No se implementa PWA todavía: faltan íconos aprobados y un service worker correctamente versionado para prometer offline completo.
 - Los assets fueron generados para el proyecto y centralizados mediante un mapping tipado; el press con barra que requiere rack queda fuera de la biblioteca editable.
-- El video fuente no se descarga ni se publica: el movimiento se reproduce con `youtube-nocookie.com`, sin autoplay, usando segmentos temporales aproximados.
+- Los videos fuente no se publican dentro del producto: el movimiento se reproduce con `youtube-nocookie.com`, sin autoplay, usando segmentos editoriales medidos.
 - Los 14 movimientos son opciones. El preset sugerido de hombros usa cuatro patrones complementarios y excluye el remo vertical y las variantes frontales redundantes.
+- Los 8 movimientos de pecho también son opciones. Su preset sugerido conserva bíceps, prioriza presses estables y deja fuera las variantes declinada, combinadas y asimétricas.
 
 ## Verificación
 
-- `npm test`: 37 tests en verde.
+- `npm test`: 46 tests en verde.
 - `npm run lint`: sin errores ni warnings.
 - `npm run typecheck`: TypeScript estricto en verde.
 - `npm run build`: build de producción exitoso con webpack; seis rutas de producto estáticas más `_not-found`.

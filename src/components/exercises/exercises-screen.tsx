@@ -27,6 +27,7 @@ import {
 import { useTraining } from "@/state/training/use-training";
 
 import { ExerciseMovementModal } from "../session/exercise-movement-modal";
+import { isExactExerciseSelection } from "./exercise-selection";
 import styles from "./exercises-screen.module.css";
 
 const sectionLabels: Record<ExerciseSectionId, string> = {
@@ -58,6 +59,32 @@ const hiddenLegacyExerciseIds = new Set([
 
 type SectionSelections = Record<ExerciseSectionId, string[]>;
 
+interface VideoSectionNotice {
+  movementCount: number;
+  title: string;
+  detail: string;
+  templateId: string;
+}
+
+const videoNoticeBySection: Partial<
+  Record<ExerciseSectionId, VideoSectionNotice>
+> = {
+  "chest-biceps": {
+    movementCount: 8,
+    title: "Los 8 están en Pecho + bíceps con su tramo exacto",
+    detail:
+      "Son opciones, no una rutina de 32 series. La sugerencia usa 3 ejercicios de pecho y conserva 2 de bíceps.",
+    templateId: "chest-video-adaptation",
+  },
+  shoulders: {
+    movementCount: 14,
+    title: "Todos están en Hombros con su tramo exacto",
+    detail:
+      "Son opciones, no una rutina de 42 series. La sugerencia inicial usa 4.",
+    templateId: "shoulders-video-adaptation",
+  },
+};
+
 function createSuggestedSelections(): SectionSelections {
   return Object.fromEntries(
     sectionOrder.map((sectionId) => [
@@ -82,10 +109,8 @@ function compareExercises(left: ExerciseDefinition, right: ExerciseDefinition) {
 export function ExercisesScreen() {
   const router = useRouter();
   const { isHydrated, startWorkoutSelection, state } = useTraining();
-  const shoulderTemplate = workoutTemplates.find(
-    ({ id }) => id === "shoulders-video-adaptation",
-  );
-  const [activeSection, setActiveSection] = useState<ExerciseSectionId>("shoulders");
+  const [activeSection, setActiveSection] =
+    useState<ExerciseSectionId>("chest-biceps");
   const [selectedBySection, setSelectedBySection] = useState<SectionSelections>(
     createSuggestedSelections,
   );
@@ -107,11 +132,26 @@ export function ExercisesScreen() {
   }, []);
 
   const visibleExercises = exercisesBySection[activeSection];
+  const videoNotice = videoNoticeBySection[activeSection];
   const selectedIds = selectedBySection[activeSection].filter((exerciseId) => {
     const exercise = exerciseCatalog.find(({ id }) => id === exerciseId);
     return exercise ? isExerciseAvailable(exercise, state.profile) : false;
   });
   const selectedSet = new Set(selectedIds);
+  const videoSuggestionIds = videoNotice
+    ? workoutTemplates
+        .find(({ id }) => id === videoNotice.templateId)
+        ?.exercises
+        .map(({ exerciseId }) => exerciseCatalog.find(({ id }) => id === exerciseId))
+        .filter(
+          (exercise): exercise is ExerciseDefinition =>
+            exercise !== undefined && isExerciseAvailable(exercise, state.profile),
+        )
+        .map(({ id }) => id) ?? []
+    : [];
+  const isVideoSuggestionApplied =
+    videoSuggestionIds.length > 0 &&
+    isExactExerciseSelection(selectedIds, videoSuggestionIds);
 
   function toggleExercise(exerciseId: string) {
     setSelectedBySection((current) => {
@@ -127,21 +167,17 @@ export function ExercisesScreen() {
     setMessage("");
   }
 
-  function selectSuggestedShoulders() {
+  function selectVideoSuggestion() {
+    if (videoSuggestionIds.length === 0) {
+      setMessage("No hay una sugerencia compatible con el equipo de tu perfil.");
+      return;
+    }
+
     setSelectedBySection((current) => ({
       ...current,
-      shoulders:
-        shoulderTemplate?.exercises
-          .map(({ exerciseId }) => exerciseCatalog.find(({ id }) => id === exerciseId))
-          .filter(
-            (exercise): exercise is ExerciseDefinition =>
-              exercise !== undefined &&
-              isExerciseAvailable(exercise, state.profile),
-          )
-          .map(({ id }) => id) ?? [],
+      [activeSection]: videoSuggestionIds,
     }));
-    setActiveSection("shoulders");
-    setMessage("Cargamos una selección equilibrada de cuatro ejercicios.");
+    setMessage("");
   }
 
   function startSelection() {
@@ -189,20 +225,38 @@ export function ExercisesScreen() {
         </div>
       </header>
 
-      <section className={styles.videoNotice} aria-labelledby="video-notice-title">
-        <PlayCircle aria-hidden="true" size={25} weight="fill" />
-        <div>
-          <p>Video analizado · 14 movimientos</p>
-          <h2 id="video-notice-title">Todos están en Hombros con su tramo exacto</h2>
-          <span>
-            Son opciones, no una rutina de 42 series. La sugerencia inicial usa 4.
-          </span>
-        </div>
-        <button onClick={selectSuggestedShoulders} type="button">
-          <Sparkle aria-hidden="true" size={18} weight="fill" />
-          Usar sugerencia
-        </button>
-      </section>
+      {videoNotice ? (
+        <section className={styles.videoNotice} aria-labelledby="video-notice-title">
+          <PlayCircle aria-hidden="true" size={25} weight="fill" />
+          <div>
+            <p>Video analizado · {videoNotice.movementCount} movimientos</p>
+            <h2 id="video-notice-title">{videoNotice.title}</h2>
+            <span>{videoNotice.detail}</span>
+            {isVideoSuggestionApplied ? (
+              <span className={styles.suggestionStatus} role="status">
+                <Check aria-hidden="true" size={16} weight="bold" />
+                {state.activeSession
+                  ? "Sugerencia aplicada a la lista. Tu sesión en curso no cambia."
+                  : `${videoSuggestionIds.length} ejercicios listos para empezar.`}
+              </span>
+            ) : null}
+          </div>
+          <button
+            aria-pressed={isVideoSuggestionApplied}
+            data-applied={isVideoSuggestionApplied}
+            disabled={isVideoSuggestionApplied}
+            onClick={selectVideoSuggestion}
+            type="button"
+          >
+            {isVideoSuggestionApplied ? (
+              <Check aria-hidden="true" size={18} weight="bold" />
+            ) : (
+              <Sparkle aria-hidden="true" size={18} weight="fill" />
+            )}
+            {isVideoSuggestionApplied ? "Sugerencia aplicada" : "Usar sugerencia"}
+          </button>
+        </section>
+      ) : null}
 
       <nav aria-label="Secciones de ejercicios" className={styles.sectionTabs}>
         {sectionOrder.map((sectionId) => (
@@ -345,19 +399,25 @@ export function ExercisesScreen() {
 
       <footer className={styles.selectionBar}>
         <div>
-          <p>{selectedIds.length} ejercicios</p>
+          <p>
+            {state.activeSession
+              ? "Sesión en curso"
+              : `${selectedIds.length} ejercicios`}
+          </p>
           <span>
-            {selectedIds.length > 6
-              ? "Para una sesión clara, 4 a 6 suelen alcanzar."
-              : `${sectionLabels[activeSection]} · 3 series por ejercicio`}
+            {state.activeSession
+              ? state.activeSession.workoutName
+              : selectedIds.length > 6
+                ? "Para una sesión clara, 4 a 6 suelen alcanzar."
+                : `${sectionLabels[activeSection]} · 3 series por ejercicio`}
           </span>
         </div>
         <button
-          disabled={selectedIds.length === 0 || Boolean(state.activeSession)}
+          disabled={!state.activeSession && selectedIds.length === 0}
           onClick={startSelection}
           type="button"
         >
-          {state.activeSession ? "Sesión en curso" : "Empezar selección"}
+          {state.activeSession ? "Retomar sesión" : "Empezar selección"}
         </button>
       </footer>
 

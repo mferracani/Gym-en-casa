@@ -121,6 +121,31 @@
   font-weight: 720;
 }
 
+.videoNotice button[data-applied="true"] {
+  border-color: color-mix(in srgb, var(--state-success) 40%, var(--border));
+  background: var(--state-success-surface);
+  color: var(--state-success);
+  cursor: default;
+  opacity: 1;
+}
+
+.videoNotice .suggestionStatus {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  padding: 6px 8px;
+  margin-top: 9px;
+  border-radius: 8px;
+  background: var(--state-success-surface);
+  color: var(--state-success);
+  font-weight: 680;
+}
+
+.suggestionStatus svg {
+  flex: 0 0 auto;
+}
+
 .sectionTabs {
   display: flex;
   gap: 8px;

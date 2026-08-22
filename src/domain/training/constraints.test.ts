@@ -54,6 +54,7 @@ test("las plantillas publicadas son compatibles con el equipamiento sin rack", (
     ).map((template) => template.id),
     [
       "chest-biceps-adaptation",
+      "chest-video-adaptation",
       "back-triceps-adaptation",
       "shoulders-video-adaptation",
       "abs-adaptation",

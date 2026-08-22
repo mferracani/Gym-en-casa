@@ -28,6 +28,20 @@ test("ofrece un enlace a la fuente en el segundo de inicio", () => {
   );
 });
 
+test("arma el tramo exacto del press de pecho en piso", () => {
+  const movement = getExerciseMovement("dumbbell-floor-press");
+
+  assert.ok(movement);
+  assert.equal(
+    buildYouTubeEmbedUrl(movement),
+    `https://www.youtube-nocookie.com/embed/${movement.videoId}?start=47&end=85&rel=0&playsinline=1`,
+  );
+  assert.equal(
+    buildMovementSourceUrl(movement),
+    `https://www.youtube.com/watch?v=${movement.videoId}&t=47s`,
+  );
+});
+
 test("sólo acepta tramos de video con un final posterior al inicio", () => {
   assert.equal(isValidMovementSegment({ startSeconds: 18, endSeconds: 42 }), true);
   assert.equal(isValidMovementSegment({ startSeconds: 42, endSeconds: 42 }), false);

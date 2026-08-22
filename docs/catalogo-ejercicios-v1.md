@@ -8,10 +8,11 @@ siendo contenido editorial pendiente de validación profesional antes de publica
 - Cuatro secciones fijas: `Pecho + bíceps`, `Espalda + tríceps`, `Hombros` y
   `Abdominales`.
 - Ejercicios compatibles con mancuernas, banco plano, banco inclinado o piso,
-  incluyendo los 14 movimientos del video de hombros analizado.
+  incluyendo 22 movimientos segmentados: 14 de hombros y 8 de pecho.
 - Sin rack, poleas, máquinas ni barra en el catálogo nuevo.
-- Cada ejercicio funcional tiene una lámina de dos posiciones; los 14 ejercicios
-  del video incluyen además un modal con su movimiento reproducido desde YouTube.
+- Cada ejercicio funcional tiene una lámina de dos posiciones; los 22 ejercicios
+  derivados de videos incluyen además un modal con el tramo correspondiente de
+  YouTube.
 - El usuario puede elegir ejercicios dentro de cualquiera de las cuatro secciones,
   iniciar la selección de la sección activa en ese orden y asignar cualquiera de
   los presets publicados a cualquier día.
@@ -73,6 +74,24 @@ Fuente: [LOS MEJORES EJERCICIOS PARA AGRANDAR HOMBROS CON MANCUERNAS — Lio Fit
   unilateral para deltoide posterior.
 - El remo vertical queda fuera del preset y muestra una alternativa por posible
   incomodidad o pinzamiento.
+
+## Adaptación del video de pecho
+
+Fuente: [8 EJERCICIOS CON MANCUERNAS PARA AGRANDAR PECHO — Lio Fitness](https://www.youtube.com/watch?v=tKijsY8sRmo).
+
+- Se separaron ocho movimientos distintos: fly-press inclinado, press de piso,
+  press declinado con cadera elevada, fly de piso, flexión sobre dos mancuernas,
+  pullover-a-press, press cerrado y flexión escalonada.
+- `Ver movimiento` usa segmentos medidos por fotogramas. Las dos flexiones tienen
+  IDs propios porque una es simétrica sobre dos mancuernas y la otra usa un solo
+  apoyo elevado.
+- Las ocho variantes quedan disponibles como opciones. No se copió la propuesta
+  completa de 32 series ni el descanso de 30–45 segundos del video.
+- El preset `Pecho + bíceps · selección video` usa press de piso, press inclinado
+  simple y fly de piso, más dos curls. Mantiene 14 series y deja fuera de la
+  sugerencia las variantes declinada, combinadas o asimétricas.
+- Las flexiones sobre mancuernas exigen apoyos hexagonales que no rueden; si el
+  equipo no es estable, corresponde usar el piso.
 
 ## Modelo mínimo futuro para rutinas guardadas
 

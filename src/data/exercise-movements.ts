@@ -1,4 +1,5 @@
 export const SHOULDER_VIDEO_ID = "qI7TfFGM0HE";
+export const CHEST_VIDEO_ID = "tKijsY8sRmo";
 
 export interface ExerciseMovement {
   exerciseId: string;
@@ -150,8 +151,98 @@ export const shoulderVideoMovements = [
   },
 ] as const satisfies readonly ExerciseMovement[];
 
+export const chestVideoMovements = [
+  {
+    exerciseId: "incline-dumbbell-fly-press",
+    order: 1,
+    videoId: CHEST_VIDEO_ID,
+    startSeconds: 8,
+    endSeconds: 44,
+    sourceExerciseName: "Aperturas + press inclinado",
+    recommended: false,
+    editorialNote:
+      "Combinación avanzada. Empezá con poco peso o elegí el press inclinado simple.",
+  },
+  {
+    exerciseId: "dumbbell-floor-press",
+    order: 2,
+    videoId: CHEST_VIDEO_ID,
+    startSeconds: 47,
+    endSeconds: 85,
+    sourceExerciseName: "Press con mancuernas en el piso",
+    recommended: true,
+  },
+  {
+    exerciseId: "decline-dumbbell-floor-press",
+    order: 3,
+    videoId: CHEST_VIDEO_ID,
+    startSeconds: 88,
+    endSeconds: 114,
+    sourceExerciseName: "Press declinado con cadera elevada",
+    recommended: false,
+    editorialNote:
+      "Variante opcional: exige sostener un puente estable durante toda la serie.",
+  },
+  {
+    exerciseId: "dumbbell-floor-fly",
+    order: 4,
+    videoId: CHEST_VIDEO_ID,
+    startSeconds: 115,
+    endSeconds: 145,
+    sourceExerciseName: "Aperturas con mancuernas en el piso",
+    recommended: true,
+    editorialNote: "Usá poco peso y frená antes si el hombro pierde una posición cómoda.",
+  },
+  {
+    exerciseId: "dumbbell-handle-push-up",
+    order: 5,
+    videoId: CHEST_VIDEO_ID,
+    startSeconds: 148,
+    endSeconds: 180,
+    sourceExerciseName: "Flexión sobre dos mancuernas",
+    recommended: false,
+    editorialNote:
+      "Sólo con mancuernas hexagonales que no rueden. Si no, apoyá las manos en el piso.",
+  },
+  {
+    exerciseId: "dumbbell-pullover-to-press",
+    order: 6,
+    videoId: CHEST_VIDEO_ID,
+    startSeconds: 183,
+    endSeconds: 221,
+    sourceExerciseName: "Pullover + press con mancuernas",
+    recommended: false,
+    editorialNote:
+      "Combinación opcional: reducí el recorrido si el hombro se despega o molesta.",
+  },
+  {
+    exerciseId: "close-grip-dumbbell-floor-press",
+    order: 7,
+    videoId: CHEST_VIDEO_ID,
+    startSeconds: 225,
+    endSeconds: 245,
+    sourceExerciseName: "Press cerrado en el piso",
+    recommended: false,
+    editorialNote: "Alternativa con más participación de tríceps; no hace falta sumarla a otro press.",
+  },
+  {
+    exerciseId: "staggered-dumbbell-push-up",
+    order: 8,
+    videoId: CHEST_VIDEO_ID,
+    startSeconds: 248,
+    endSeconds: 275,
+    sourceExerciseName: "Flexión escalonada sobre una mancuerna",
+    recommended: false,
+    editorialNote:
+      "Variante asimétrica avanzada. Usá una mancuerna hexagonal estable y alterná el apoyo.",
+  },
+] as const satisfies readonly ExerciseMovement[];
+
 const movementByExerciseId = new Map<string, ExerciseMovement>(
-  shoulderVideoMovements.map((movement) => [movement.exerciseId, movement]),
+  [...shoulderVideoMovements, ...chestVideoMovements].map((movement) => [
+    movement.exerciseId,
+    movement,
+  ]),
 );
 
 export function getExerciseMovement(

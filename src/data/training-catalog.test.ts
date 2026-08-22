@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  chestVideoExerciseIds,
   createSelectionWorkoutTemplate,
   exerciseCatalog,
   shoulderVideoExerciseIds,
@@ -58,6 +59,58 @@ test("la rutina sugerida de hombros es acotada y evita el remo vertical", () => 
   );
   assert.equal(
     template.exercises.some(({ exerciseId }) => exerciseId === "dumbbell-upright-row"),
+    false,
+  );
+});
+
+test("los 8 ejercicios del video de pecho viven en Pecho + bíceps y no requieren rack", () => {
+  assert.equal(chestVideoExerciseIds.length, 8);
+
+  const definitions = chestVideoExerciseIds.map((exerciseId) =>
+    exerciseCatalog.find((exercise) => exercise.id === exerciseId),
+  );
+
+  assert.equal(definitions.every(Boolean), true);
+  assert.equal(
+    definitions.every((exercise) => exercise?.sectionId === "chest-biceps"),
+    true,
+  );
+  assert.equal(
+    definitions.every((exercise) => exercise?.requiredEquipment.includes("dumbbells")),
+    true,
+  );
+  assert.equal(definitions.every((exercise) => exercise?.requiresRack !== true), true);
+});
+
+test("la sugerencia de pecho usa una adaptación acotada y conserva bíceps", () => {
+  const template = workoutTemplates.find(
+    ({ id }) => id === "chest-video-adaptation",
+  );
+
+  assert.ok(template);
+  assert.deepEqual(
+    template.exercises.map(({ exerciseId }) => exerciseId),
+    [
+      "dumbbell-floor-press",
+      "dumbbell-incline-press",
+      "dumbbell-floor-fly",
+      "seated-alternating-dumbbell-curl",
+      "hammer-curl",
+    ],
+  );
+  assert.equal(
+    template.exercises.reduce((total, exercise) => total + exercise.targetSets, 0),
+    14,
+  );
+  assert.equal(
+    template.exercises.some(({ exerciseId }) =>
+      [
+        "decline-dumbbell-floor-press",
+        "dumbbell-handle-push-up",
+        "dumbbell-pullover-to-press",
+        "staggered-dumbbell-push-up",
+      ].includes(exerciseId),
+    ),
     false,
   );
 });

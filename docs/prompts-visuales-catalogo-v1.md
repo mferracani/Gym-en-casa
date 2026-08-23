@@ -39,6 +39,12 @@ cropping, text, arrows, labels, logos, watermark, UI, gym setting, glossy 3D.
 | `concentration-curl.png` | Codo contra cara interna del muslo, extensión → flexión | Bíceps; braquial secundario |
 | `one-arm-dumbbell-row.png` | Mano y rodilla apoyadas, peso abajo → remo hacia cadera | Dorsal y romboides; bíceps y deltoide posterior secundarios |
 | `chest-supported-dumbbell-row.png` | Pecho en banco inclinado, brazos abajo → remada a costillas | Espalda media y dorsal; bíceps secundario |
+| `renegade-dumbbell-row.webp` | Plancha alta sobre dos mancuernas hexagonales → remo unilateral sin rotar la cadera | Dorsal y romboides; core, bíceps y deltoide posterior secundarios |
+| `bent-over-double-dumbbell-row.webp` | Bisagra de cadera, ambos brazos abajo → remo bilateral hacia costillas | Dorsal y romboides; trapecio medio, bíceps y deltoide posterior secundarios |
+| `underhand-bent-over-dumbbell-row.webp` | Bisagra de cadera con palmas hacia adelante → remo bilateral supino hacia la cadera | Dorsal y romboides; bíceps y trapecio medio secundarios |
+| `underhand-chest-supported-dumbbell-row.webp` | Pecho apoyado, palmas hacia adelante y brazos abajo → remo bilateral supino | Dorsal y romboides; bíceps y trapecio medio secundarios |
+| `incline-chest-supported-dumbbell-shrug.webp` | Pecho apoyado y brazos rectos → elevación y retracción escapular sin remar | Trapecio y romboides; deltoide posterior secundario |
+| `standing-dumbbell-shrug.webp` | De pie con hombros bajos → encogimiento vertical con brazos rectos | Trapecio superior; antebrazos y core secundarios |
 | `lying-dumbbell-triceps-extension.png` | Mancuernas sobre pecho → flexión controlada junto a la cabeza | Tríceps |
 | `seated-overhead-dumbbell-triceps-extension.png` | Mancuerna detrás de cabeza → extensión vertical | Tríceps, énfasis porción larga |
 | `bench-supported-triceps-kickback.png` | Codo fijo flexionado → extensión atrás | Tríceps; deltoide posterior secundario |
@@ -50,6 +56,16 @@ cropping, text, arrows, labels, logos, watermark, UI, gym setting, glossy 3D.
 | `incline-plank-dumbbell-drag.png` | Plancha sobre banco, peso de un lado → arrastre al otro | Oblicuos/transverso; serrato/hombro secundarios |
 | `weighted-bench-crunch.png` | Supino con peso al pecho → crunch corto | Recto abdominal; oblicuos secundarios |
 | `dumbbell-dead-bug.png` | Tabletop con peso estable → extensión de una pierna | Core anti-extensión; serrato secundario |
+| `seated-triple-leg-raise.webp` | Sentado con manos apoyadas y piernas bajas → rodillas al pecho | Recto abdominal; oblicuos y flexores de cadera secundarios |
+| `lying-windshield-wiper.webp` | Piernas centradas en tabletop → rotación controlada hacia un lado | Oblicuos y transverso; recto abdominal secundario |
+| `floor-crunch.webp` | Supino con rodillas flexionadas → flexión corta del tronco | Recto abdominal; oblicuos secundarios |
+| `forearm-plank.webp` | Apoyo de rodillas → plancha completa de antebrazos | Core y transverso; serrato y glúteos secundarios |
+| `lying-leg-raise.webp` | Piernas extendidas bajas → elevación vertical | Recto abdominal; flexores de cadera secundarios |
+| `cross-body-crunch.webp` | Supino → hombro hacia rodilla contraria | Oblicuos; recto abdominal secundario |
+| `x-crunch.webp` | Brazos y piernas abiertos en X → V-up central | Recto abdominal y oblicuos; flexores de cadera secundarios |
+| `wide-stance-plank.webp` | Apoyo amplio de rodillas → plancha alta abierta | Core y transverso; hombros, serrato y glúteos secundarios |
+| `twisting-crunch.webp` | Supino → crunch con rotación del tronco | Oblicuos; recto abdominal secundario |
+| `side-plank-hip-dip.webp` | Plancha lateral alta → descenso controlado de cadera | Oblicuos y transverso; glúteo medio y hombro secundarios |
 
 ## Prompt base de mapa muscular
 

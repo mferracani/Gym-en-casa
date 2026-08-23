@@ -10,6 +10,8 @@ import {
   muscleMapVisualsBySection,
 } from "./exercise-visuals.ts";
 import {
+  absVideoExerciseIds,
+  backVideoExerciseIds,
   chestVideoExerciseIds,
   shoulderVideoExerciseIds,
   workoutTemplates,
@@ -104,9 +106,11 @@ test("todos los movimientos extraídos de videos tienen una lámina propia", () 
   const videoExerciseIds = [
     ...shoulderVideoExerciseIds,
     ...chestVideoExerciseIds,
+    ...backVideoExerciseIds,
+    ...absVideoExerciseIds,
   ];
 
-  assert.equal(videoExerciseIds.length, 22);
+  assert.equal(videoExerciseIds.length, 40);
   assert.equal(
     videoExerciseIds.every((exerciseId) => getExerciseVisual(exerciseId) !== undefined),
     true,

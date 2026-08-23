@@ -7,6 +7,10 @@
   color: var(--foreground);
 }
 
+.page[data-active-session="true"] {
+  padding-bottom: calc(112px + env(safe-area-inset-bottom));
+}
+
 .eyebrow {
   margin: 0;
   color: var(--accent);
@@ -429,6 +433,17 @@
   background: rgb(251 248 243 / 96%);
   box-shadow: 0 14px 40px rgb(40 38 36 / 18%);
   backdrop-filter: blur(12px);
+}
+
+.selectionBar[data-session-active="true"] {
+  position: static;
+  right: auto;
+  bottom: auto;
+  left: auto;
+  width: 100%;
+  margin: 16px 0 0;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
 .selectionBar p,

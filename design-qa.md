@@ -140,6 +140,156 @@ final result: passed
 
 ---
 
+# Design QA — video de abdominales y catálogo editable
+
+## Comparison target
+
+- Fuente: [10 EJERCICIOS PARA ABDOMEN EN CASA — Lio Fitness](https://www.youtube.com/watch?v=UtRrE-X-KPQ), duración `4:12`.
+- Descripción inspeccionada: orden, nombres, series, repeticiones y descansos de los diez movimientos.
+- Evidencia visual conjunta: `/Users/mac017/.codex/visualizations/2026/08/22/01a02a5b-d44d-7043-80d0-97f3e8ef0ad7/abs-video-qa/abs-exercise-visuals.png`.
+- Catálogo desktop: `/Users/mac017/.codex/visualizations/2026/08/22/01a02a5b-d44d-7043-80d0-97f3e8ef0ad7/abs-video-qa/abs-catalog-desktop.png`.
+- Modales extremos: `abs-first-movement-modal.png` y `abs-last-movement-modal.png` en la misma carpeta.
+
+## Full-view comparison evidence
+
+Los diez ejercicios se muestran primero y en el mismo orden que el video. Cada
+tarjeta usa una lámina propia de dos posiciones, el músculo principal, apoyos,
+nombre fuente y `Ver movimiento`. Los cuatro abdominales preexistentes quedan al
+final y no pierden su selección independiente.
+
+## Required fidelity surfaces
+
+- Movimiento: los clips extremos reproducen `10–34 s` y `219–247 s`; los ocho
+  intermedios conservan sus ventanas editoriales en el mapping tipado.
+- Imágenes: 10/10 WebP cargaron; la primera y la última reportaron
+  `naturalWidth = 279` en su render desktop.
+- Sugerencia: el CTA selecciona exactamente triple elevación, elevación de
+  piernas, crunch en X y plancha lateral dinámica. Con una sesión activa, el
+  aviso confirma que la lista cambia sin modificar la sesión en curso.
+- Layout: `1258 × 927`, sin overflow horizontal (`scrollWidth = clientWidth =
+  1258`) y sin que la barra de sesión tape el catálogo.
+- Accesibilidad: tabs con `aria-pressed`, status de sugerencia, modal nombrado,
+  cierre explícito y textos alternativos específicos por lámina.
+
+## Interaction and verification
+
+- `Abdominales` muestra 14 opciones: 10 del video y 4 preexistentes.
+- `Usar sugerencia` pasa a `Sugerencia aplicada` y deja 4 ejercicios agregados.
+- El primer y el último modal abren embeds de `youtube-nocookie.com` con `start`
+  y `end` correctos.
+- `npm test`: 55/55. `npm run lint`, `npm run typecheck` y `npm run build`:
+  aprobados; el build usó una copia aislada cuyo source y assets cambiados
+  coinciden byte a byte con el workspace.
+
+No quedan diferencias P0, P1 o P2 accionables para esta integración. La técnica,
+los cues y la prescripción siguen pendientes de validación profesional antes de
+publicación externa.
+
+final result: passed
+
+---
+
+# Design QA — video de espalda
+
+## Comparison target
+
+- Fuente primaria: [LOS MEJORES EJERCICIOS PARA AGRANDAR ESPALDA CON MANCUERNAS — Lio Fitness](https://www.youtube.com/watch?v=CCLrgxrr8vM), duración informada `3:01`.
+- Orden editorial confirmado en la descripción del autor: ocho movimientos. El video no ofrece capítulos, subtítulos ni transcripción.
+- Catálogo desktop: `/Users/mac017/.codex/visualizations/2026/08/22/01a02a5b-d44d-7043-80d0-97f3e8ef0ad7/back-video-qa/back-catalog-desktop-1258x927.png`.
+- Modal de movimiento: `/Users/mac017/.codex/visualizations/2026/08/22/01a02a5b-d44d-7043-80d0-97f3e8ef0ad7/back-video-qa/back-movement-modal-desktop-1258x927.png`.
+- Revisión conjunta de las ocho láminas: `/Users/mac017/.codex/visualizations/2026/08/22/01a02a5b-d44d-7043-80d0-97f3e8ef0ad7/back-video-qa/back-eight-exercises-contact-sheet.png`.
+- Viewport directo de la implementación: `1258 × 927`, DPR `1`, `/ejercicios`, sección `Espalda + tríceps`, sesión de pecho activa preservada.
+
+## Full-view comparison evidence
+
+La sección mantiene el lenguaje editorial aprobado y muestra 11 opciones: los ocho movimientos de espalda en el orden del video y tres ejercicios de tríceps. Se reutilizan las láminas existentes del remo unilateral y el remo con pecho apoyado; los otros seis patrones tienen una generación propia. El bloque de sesión activa permanece dentro del flujo y no tapa las tarjetas.
+
+## Focused-region evidence
+
+La lámina del remo inclinado bilateral se regeneró porque la primera salida ocultaba una mancuerna. La versión final muestra dos mancuernas separadas, ambas manos y el recorrido bilateral en inicio y final. La hoja conjunta permite distinguir el remo renegado, los dos agarres de pie, las dos variantes apoyadas y ambos encogimientos sin depender sólo del nombre.
+
+## Required fidelity surfaces
+
+- Imágenes: los seis WebP nuevos miden `1536 × 1024`; las 11 imágenes de la sección reportaron carga completa y ancho natural positivo.
+- Movimiento: los ocho botones `Ver movimiento` usan `youtube-nocookie.com`, sin autoplay. Se verificaron directamente el primer segmento `0–34 s` y el último `155–181 s`.
+- Contenido: los nombres visibles normalizan los «jalones» del autor como remos y los «press para trapecio» como encogimientos; `En el video` conserva el rótulo fuente.
+- Recomendación: `Usar sugerencia` cambia la lista a tres ejercicios de espalda y dos de tríceps, confirma el estado aplicado y no modifica una sesión en curso.
+- Seguridad: el remo renegado advierte que las dos mancuernas deben ser hexagonales y estables; agarres supinos y encogimientos se presentan como alternativas.
+- Responsiveness: sin overflow horizontal en `1258 × 927`. La integración reutiliza el componente de catálogo ya aprobado en `390 × 844` y no agrega reglas de layout nuevas.
+- Accesibilidad: las seis nuevas imágenes tienen alt específico; el modal conserva diálogo nombrado, tres cues, cierre por Escape y enlace a la fuente.
+
+## Interaction and console checks
+
+- Cambiar a `Espalda + tríceps` mostró `11 opciones` y badges `Video 01` a `Video 08` en el orden esperado.
+- La sugerencia pasó de la selección editorial anterior al nuevo preset de cinco ejercicios y mostró confirmación visible.
+- El primer modal abrió con `start=0&end=34`; el último con `start=155&end=181`.
+- `npm test`: 51/51. `npm run lint`, `npm run typecheck` y `npm run build`: aprobados contra una copia aislada cuyo source coincide byte a byte con el workspace.
+
+## Comparison history
+
+### Pass 1
+
+- [P2] El primer remo bilateral ocultaba una mancuerna por el ángulo trasero. Fix: regeneración frontal-lateral 3/4 con ambos brazos y las dos mancuernas visibles en las dos posiciones.
+- [P2] La nomenclatura literal del video llamaba «jalones» a remos y «press» a encogimientos. Fix: nombre técnico en la tarjeta y rótulo original conservado como referencia de fuente.
+
+No quedan diferencias P0, P1 o P2 accionables en esta integración. Técnica, cues y agrupaciones siguen pendientes de validación profesional antes de publicación externa.
+
+final result: passed
+
+---
+
+# Design QA — ubicación de la sesión en curso
+
+## Comparison target
+
+- Source visual truth: captura anotada por el usuario de `/ejercicios`, recreada en `/Users/mac017/.codex/visualizations/2026/08/22/01a02a5b-d44d-7043-80d0-97f3e8ef0ad7/exercise-session-bar-qa/exercise-selection-bar-source-1258x927.png`.
+- Implementation desktop: `/Users/mac017/.codex/visualizations/2026/08/22/01a02a5b-d44d-7043-80d0-97f3e8ef0ad7/exercise-session-bar-qa/exercise-selection-bar-after-1258x927.png`.
+- Combined comparison: `/Users/mac017/.codex/visualizations/2026/08/22/01a02a5b-d44d-7043-80d0-97f3e8ef0ad7/exercise-session-bar-qa/exercise-selection-bar-comparison-1258x927.png`.
+- Mobile evidence: `/Users/mac017/.codex/visualizations/2026/08/22/01a02a5b-d44d-7043-80d0-97f3e8ef0ad7/exercise-session-bar-qa/exercise-selection-bar-after-390x844.png`.
+- Desktop source and implementation: `1258 × 927` pixels, CSS viewport `1258 × 927`, DPR `1`.
+- Mobile implementation: `390 × 844` pixels, CSS viewport `390 × 844`, DPR `1`.
+- State: `/ejercicios`, `Pecho + bíceps`, sesión activa, `scrollY = 0`.
+
+## Full-view comparison evidence
+
+La comparación conjunta muestra que la barra fija de `680 × 72 px` tapaba tres tarjetas y se superponía `18 px` con la navegación. La implementación la integra después del aviso editorial sólo cuando existe una sesión activa. En desktop pasa a ocupar `1048 × 72 px` dentro del flujo; la medición posterior devuelve cero tarjetas superpuestas. En mobile ocupa `350 × 72 px`, tampoco se superpone a la primera tarjeta y no genera overflow horizontal (`scrollWidth = clientWidth = 390`).
+
+## Focused-region evidence
+
+No hizo falta un crop separado: el componente completo y los tres primeros ejercicios son legibles en la comparación 1:1. La verificación se complementó con bounding boxes del navegador para confirmar `position: static`, ausencia de intersección con tarjetas y separación de la navegación inferior.
+
+## Required fidelity surfaces
+
+- Fonts and typography: se conservaron familia, pesos, tamaños, tracking y jerarquía del componente; no aparece truncamiento nuevo.
+- Spacing and layout rhythm: el bloque activo queda entre el aviso de video y las pestañas con `16 px` de separación; el contenido posterior se desplaza en el flujo en lugar de quedar cubierto.
+- Colors and visual tokens: conserva fondo marfil, borde, rojo de acción y estados existentes; se retiran sólo sombra y blur cuando el bloque deja de flotar.
+- Image quality and asset fidelity: no se modificaron, recortaron ni reemplazaron las láminas; los tres visuales above-the-fold mantienen escala y nitidez.
+- Copy and content: `Sesión en curso`, `Pecho + bíceps` y `Retomar sesión` se mantienen sin cambios.
+- Responsiveness: aprobado en `1258 × 927` y `390 × 844`; no hay overflow horizontal ni solapamiento de la sesión activa.
+- Accessibility: el bloque pasa a `aside` nombrado, conserva botón nativo, foco visible y target de `48 px`; su orden de teclado ahora precede al catálogo, igual que su posición visual.
+
+## Interaction and console checks
+
+- `Retomar sesión` navegó a `/entrenar`; volver restauró `/ejercicios` con el CTA visible.
+- El cambio de sección siguió funcionando y la sesión activa conservó su nombre.
+- Consola en desktop y mobile: sin errores.
+- `npm test`: 46/46. `npm run lint`, `npm run typecheck` y `npm run build`: aprobados.
+
+## Comparison history
+
+### Pass 1
+
+- [P1] La barra de sesión activa era fija y bloqueaba contenido principal en los dos tamaños. Fix: reubicar el bloque antes del catálogo y aplicar layout estático sólo al estado de sesión activa.
+- [P2] El bloque fijo invadía la navegación inferior en desktop. Fix: retirar el posicionamiento, sombra y blur del estado activo, y ajustar el espacio inferior reservado por la página.
+
+Post-fix evidence: comparación desktop conjunta y captura mobile indicadas arriba; ambas mediciones reportan cero solapamientos.
+
+No quedan diferencias P0, P1 o P2 accionables para esta corrección.
+
+final result: passed
+
+---
+
 # Design QA — video de hombros y catálogo editable
 
 ## Comparison target

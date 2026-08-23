@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  absVideoExerciseIds,
+  backVideoExerciseIds,
   chestVideoExerciseIds,
   createSelectionWorkoutTemplate,
   exerciseCatalog,
@@ -9,6 +11,83 @@ import {
   weeklyScheduleSeed,
   workoutTemplates,
 } from "./training-catalog.ts";
+
+test("los 10 ejercicios del video de abdominales viven en Abdominales y no requieren equipo", () => {
+  assert.equal(absVideoExerciseIds.length, 10);
+
+  const definitions = absVideoExerciseIds.map((exerciseId) =>
+    exerciseCatalog.find((exercise) => exercise.id === exerciseId),
+  );
+
+  assert.equal(definitions.every(Boolean), true);
+  assert.equal(definitions.every((exercise) => exercise?.sectionId === "abs"), true);
+  assert.equal(
+    definitions.every((exercise) => exercise?.requiredEquipment.length === 0),
+    true,
+  );
+});
+
+test("la sugerencia de abdominales usa cuatro movimientos del video", () => {
+  const template = workoutTemplates.find(
+    ({ id }) => id === "abs-video-adaptation",
+  );
+
+  assert.ok(template);
+  assert.deepEqual(
+    template.exercises.map(({ exerciseId }) => exerciseId),
+    [
+      "seated-triple-leg-raise",
+      "lying-leg-raise",
+      "x-crunch",
+      "side-plank-hip-dip",
+    ],
+  );
+  assert.equal(
+    template.exercises.reduce((total, exercise) => total + exercise.targetSets, 0),
+    12,
+  );
+});
+
+test("los 8 ejercicios del video de espalda viven en Espalda + tríceps y no requieren rack", () => {
+  assert.equal(backVideoExerciseIds.length, 8);
+
+  const definitions = backVideoExerciseIds.map((exerciseId) =>
+    exerciseCatalog.find((exercise) => exercise.id === exerciseId),
+  );
+
+  assert.equal(definitions.every(Boolean), true);
+  assert.equal(
+    definitions.every((exercise) => exercise?.sectionId === "back-triceps"),
+    true,
+  );
+  assert.equal(
+    definitions.every((exercise) => exercise?.requiredEquipment.includes("dumbbells")),
+    true,
+  );
+  assert.equal(definitions.every((exercise) => exercise?.requiresRack !== true), true);
+});
+
+test("la sugerencia de espalda usa tres tirones y conserva dos ejercicios de tríceps", () => {
+  const template = workoutTemplates.find(
+    ({ id }) => id === "back-video-adaptation",
+  );
+
+  assert.ok(template);
+  assert.deepEqual(
+    template.exercises.map(({ exerciseId }) => exerciseId),
+    [
+      "bent-over-double-dumbbell-row",
+      "one-arm-dumbbell-row",
+      "incline-chest-supported-dumbbell-shrug",
+      "lying-dumbbell-triceps-extension",
+      "seated-overhead-dumbbell-triceps-extension",
+    ],
+  );
+  assert.equal(
+    template.exercises.reduce((total, exercise) => total + exercise.targetSets, 0),
+    15,
+  );
+});
 
 test("la agenda inicial sólo asigna Pecho + bíceps al sábado", () => {
   const assignedTemplates = weeklyScheduleSeed.filter(

@@ -19,7 +19,7 @@ MVP funcional local-first completado y verificado localmente el 22 de agosto de 
 
 - `Hoy`: fecha real, estado semanal derivado, mapa muscular, resumen visual de la rutina asignada, inicio, retoma y acceso a progreso luego del cierre.
 - `Ejercicios`: biblioteca editable por `Pecho + bíceps`, `Espalda + tríceps`, `Hombros` y `Abdominales`; permite combinar ejercicios dentro de la sección activa, aplicar una sugerencia con confirmación visible y empezar una sesión respetando el orden de agregado. Si ya hay una sesión activa, la acción principal permite retomarla.
-- `Sesión guiada`: un ejercicio por vez con su secuencia visual, peso opcional en kg, repeticiones, registro/reapertura de series, pausa, navegación, confirmación de descarte, resumen y cierre. Los 14 ejercicios derivados del video de hombros y los 8 de pecho incluyen `Ver movimiento` con su segmento exacto de YouTube.
+- `Sesión guiada`: un ejercicio por vez con su secuencia visual, peso opcional en kg, repeticiones, registro/reapertura de series, pausa, navegación, confirmación de descarte, resumen y cierre. Los 14 ejercicios derivados del video de hombros, los 8 de pecho, los 8 de espalda y los 10 de abdominales incluyen `Ver movimiento` con su segmento de YouTube.
 - `Semana`: agenda recurrente editable; cada día admite cualquiera de los presets publicados, recuperación, descanso o contenido pendiente.
 - `Progreso`: historial de sesiones, series, repeticiones, volumen, último registro y máximo peso por ejercicio.
 - `Perfil`: nombre, inventario de equipo, advertencia sin rack, aviso de almacenamiento local y restablecimiento en dos pasos.
@@ -37,10 +37,16 @@ MVP funcional local-first completado y verificado localmente el 22 de agosto de 
 - Los videos fuente no se publican dentro del producto: el movimiento se reproduce con `youtube-nocookie.com`, sin autoplay, usando segmentos editoriales medidos.
 - Los 14 movimientos son opciones. El preset sugerido de hombros usa cuatro patrones complementarios y excluye el remo vertical y las variantes frontales redundantes.
 - Los 8 movimientos de pecho también son opciones. Su preset sugerido conserva bíceps, prioriza presses estables y deja fuera las variantes declinada, combinadas y asimétricas.
+- Los 8 movimientos de espalda son opciones dentro de `Espalda + tríceps`. El
+  preset sugerido combina tres patrones de espalda con dos ejercicios de
+  tríceps; no acumula las variantes de agarre ni ambos encogimientos.
+- Los 10 movimientos de abdominales son opciones sin equipamiento. El preset
+  sugerido usa cuatro movimientos dinámicos; las planchas estáticas quedan
+  disponibles, pero fuera del preset hasta soportar series medidas por tiempo.
 
 ## Verificación
 
-- `npm test`: 46 tests en verde.
+- `npm test`: 55 tests en verde.
 - `npm run lint`: sin errores ni warnings.
 - `npm run typecheck`: TypeScript estricto en verde.
 - `npm run build`: build de producción exitoso con webpack; seis rutas de producto estáticas más `_not-found`.
@@ -49,6 +55,12 @@ MVP funcional local-first completado y verificado localmente el 22 de agosto de 
 - QA de Perfil: guardar nombre, recargar y restaurar; feedback de éxito visible.
 - QA responsive: `320 × 568`, `390 × 844` y `1280 × 900`, sin overflow horizontal.
 - Consola verificada en una pestaña nueva sin warnings ni errores.
+- QA de Espalda: 11 opciones visibles, 8 movimientos ordenados como el video,
+  sugerencia funcional de 5 ejercicios, 11 imágenes cargadas y clips extremos
+  verificados en `0–34 s` y `155–181 s`.
+- QA de Abdominales: 14 opciones visibles, 10 movimientos ordenados como el
+  video, sugerencia funcional de 4 ejercicios, 10 láminas nuevas y clips
+  extremos verificados en `10–34 s` y `219–247 s`.
 - Evidencia y criterios visuales: `design-qa.md`.
 
 ## Riesgos y pendientes

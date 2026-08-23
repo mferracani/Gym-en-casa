@@ -1,5 +1,7 @@
 export const SHOULDER_VIDEO_ID = "qI7TfFGM0HE";
 export const CHEST_VIDEO_ID = "tKijsY8sRmo";
+export const BACK_VIDEO_ID = "CCLrgxrr8vM";
+export const ABS_VIDEO_ID = "UtRrE-X-KPQ";
 
 export interface ExerciseMovement {
   exerciseId: string;
@@ -11,6 +13,197 @@ export interface ExerciseMovement {
   recommended: boolean;
   editorialNote?: string;
 }
+
+export const absVideoMovements = [
+  {
+    exerciseId: "seated-triple-leg-raise",
+    order: 1,
+    videoId: ABS_VIDEO_ID,
+    startSeconds: 10,
+    endSeconds: 34,
+    sourceExerciseName: "Triple elevación",
+    recommended: true,
+  },
+  {
+    exerciseId: "lying-windshield-wiper",
+    order: 2,
+    videoId: ABS_VIDEO_ID,
+    startSeconds: 34,
+    endSeconds: 55,
+    sourceExerciseName: "Wipers",
+    recommended: false,
+    editorialNote:
+      "Variante rotacional avanzada: acortá el recorrido si la zona lumbar se despega del piso.",
+  },
+  {
+    exerciseId: "floor-crunch",
+    order: 3,
+    videoId: ABS_VIDEO_ID,
+    startSeconds: 55,
+    endSeconds: 78,
+    sourceExerciseName: "Crunch",
+    recommended: false,
+    editorialNote:
+      "Alternativa simple. Elegí este crunch o una variante dinámica, no hace falta sumar todas.",
+  },
+  {
+    exerciseId: "forearm-plank",
+    order: 4,
+    videoId: ABS_VIDEO_ID,
+    startSeconds: 78,
+    endSeconds: 103,
+    sourceExerciseName: "Planchas",
+    recommended: false,
+    editorialNote:
+      "El video propone medirla por tiempo; cortá la serie cuando pierdas la alineación.",
+  },
+  {
+    exerciseId: "lying-leg-raise",
+    order: 5,
+    videoId: ABS_VIDEO_ID,
+    startSeconds: 103,
+    endSeconds: 129,
+    sourceExerciseName: "Elevación de piernas",
+    recommended: true,
+  },
+  {
+    exerciseId: "cross-body-crunch",
+    order: 6,
+    videoId: ABS_VIDEO_ID,
+    startSeconds: 129,
+    endSeconds: 152,
+    sourceExerciseName: "Crunches",
+    recommended: false,
+    editorialNote:
+      "Variante cruzada opcional: alterná los lados sin tirar de la nuca.",
+  },
+  {
+    exerciseId: "x-crunch",
+    order: 7,
+    videoId: ABS_VIDEO_ID,
+    startSeconds: 152,
+    endSeconds: 174,
+    sourceExerciseName: "X crunches",
+    recommended: true,
+  },
+  {
+    exerciseId: "wide-stance-plank",
+    order: 8,
+    videoId: ABS_VIDEO_ID,
+    startSeconds: 174,
+    endSeconds: 196,
+    sourceExerciseName: "Plancha abierta",
+    recommended: false,
+    editorialNote:
+      "Variante isométrica: mantené manos y pies firmes y evitá hundir la zona lumbar.",
+  },
+  {
+    exerciseId: "twisting-crunch",
+    order: 9,
+    videoId: ABS_VIDEO_ID,
+    startSeconds: 196,
+    endSeconds: 219,
+    sourceExerciseName: "Crunch con giros",
+    recommended: false,
+    editorialNote:
+      "Alternativa rotacional. Elegila en lugar del crunch cruzado si querés variar.",
+  },
+  {
+    exerciseId: "side-plank-hip-dip",
+    order: 10,
+    videoId: ABS_VIDEO_ID,
+    startSeconds: 219,
+    endSeconds: 247,
+    sourceExerciseName: "Planchas laterales",
+    recommended: true,
+  },
+] as const satisfies readonly ExerciseMovement[];
+
+export const backVideoMovements = [
+  {
+    exerciseId: "renegade-dumbbell-row",
+    order: 1,
+    videoId: BACK_VIDEO_ID,
+    startSeconds: 0,
+    endSeconds: 34,
+    sourceExerciseName: "Remo con mancuernas",
+    recommended: false,
+    editorialNote:
+      "Variante avanzada: usá dos mancuernas hexagonales estables y evitá rotar la cadera.",
+  },
+  {
+    exerciseId: "bent-over-double-dumbbell-row",
+    order: 2,
+    videoId: BACK_VIDEO_ID,
+    startSeconds: 34,
+    endSeconds: 53,
+    sourceExerciseName: "Jalones con mancuernas",
+    recommended: true,
+  },
+  {
+    exerciseId: "underhand-bent-over-dumbbell-row",
+    order: 3,
+    videoId: BACK_VIDEO_ID,
+    startSeconds: 53,
+    endSeconds: 75,
+    sourceExerciseName: "Jalones con agarre invertido",
+    recommended: false,
+    editorialNote:
+      "Alternativa supina al remo inclinado bilateral; elegí una de las dos variantes.",
+  },
+  {
+    exerciseId: "one-arm-dumbbell-row",
+    order: 4,
+    videoId: BACK_VIDEO_ID,
+    startSeconds: 75,
+    endSeconds: 95,
+    sourceExerciseName: "Jalones en banco",
+    recommended: true,
+  },
+  {
+    exerciseId: "chest-supported-dumbbell-row",
+    order: 5,
+    videoId: BACK_VIDEO_ID,
+    startSeconds: 95,
+    endSeconds: 115,
+    sourceExerciseName: "Jalones dobles en banco inclinado",
+    recommended: false,
+    editorialNote:
+      "Variante estable. Alternala con el remo bilateral de pie para no repetir el mismo patrón.",
+  },
+  {
+    exerciseId: "underhand-chest-supported-dumbbell-row",
+    order: 6,
+    videoId: BACK_VIDEO_ID,
+    startSeconds: 115,
+    endSeconds: 135,
+    sourceExerciseName:
+      "Jalones dobles con agarre invertido en banco inclinado",
+    recommended: false,
+    editorialNote:
+      "Alternativa supina con banco. Usala en lugar del remo con pecho apoyado neutro.",
+  },
+  {
+    exerciseId: "incline-chest-supported-dumbbell-shrug",
+    order: 7,
+    videoId: BACK_VIDEO_ID,
+    startSeconds: 135,
+    endSeconds: 155,
+    sourceExerciseName: "Press para trapecio en banco inclinado",
+    recommended: true,
+  },
+  {
+    exerciseId: "standing-dumbbell-shrug",
+    order: 8,
+    videoId: BACK_VIDEO_ID,
+    startSeconds: 155,
+    endSeconds: 181,
+    sourceExerciseName: "Press para trapecio con mancuernas",
+    recommended: false,
+    editorialNote:
+      "Alternativa de pie. Elegí este encogimiento o el apoyado en banco, no ambos.",
+  },
+] as const satisfies readonly ExerciseMovement[];
 
 export const shoulderVideoMovements = [
   {
@@ -239,10 +432,12 @@ export const chestVideoMovements = [
 ] as const satisfies readonly ExerciseMovement[];
 
 const movementByExerciseId = new Map<string, ExerciseMovement>(
-  [...shoulderVideoMovements, ...chestVideoMovements].map((movement) => [
-    movement.exerciseId,
-    movement,
-  ]),
+  [
+    ...shoulderVideoMovements,
+    ...chestVideoMovements,
+    ...backVideoMovements,
+    ...absVideoMovements,
+  ].map((movement) => [movement.exerciseId, movement]),
 );
 
 export function getExerciseMovement(

@@ -56,8 +56,10 @@ test("las plantillas publicadas son compatibles con el equipamiento sin rack", (
       "chest-biceps-adaptation",
       "chest-video-adaptation",
       "back-triceps-adaptation",
+      "back-video-adaptation",
       "shoulders-video-adaptation",
       "abs-adaptation",
+      "abs-video-adaptation",
     ],
   );
 });

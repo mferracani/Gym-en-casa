@@ -76,12 +76,26 @@ const videoNoticeBySection: Partial<
       "Son opciones, no una rutina de 32 series. La sugerencia usa 3 ejercicios de pecho y conserva 2 de bíceps.",
     templateId: "chest-video-adaptation",
   },
+  "back-triceps": {
+    movementCount: 8,
+    title: "Los 8 están en Espalda + tríceps con su tramo de video",
+    detail:
+      "Son opciones, no una rutina de 24 series. La sugerencia usa 3 ejercicios de espalda y conserva 2 de tríceps.",
+    templateId: "back-video-adaptation",
+  },
   shoulders: {
     movementCount: 14,
     title: "Todos están en Hombros con su tramo exacto",
     detail:
       "Son opciones, no una rutina de 42 series. La sugerencia inicial usa 4.",
     templateId: "shoulders-video-adaptation",
+  },
+  abs: {
+    movementCount: 10,
+    title: "Los 10 están en Abdominales con su tramo exacto",
+    detail:
+      "Son opciones, no una rutina de 40 series. La sugerencia inicial usa 4 movimientos sin equipamiento.",
+    templateId: "abs-video-adaptation",
   },
 };
 
@@ -208,7 +222,10 @@ export function ExercisesScreen() {
   }
 
   return (
-    <main className={styles.page}>
+    <main
+      className={styles.page}
+      data-active-session={state.activeSession ? "true" : "false"}
+    >
       <header className={styles.header}>
         <div>
           <p className={styles.eyebrow}>Biblioteca editable</p>
@@ -257,6 +274,34 @@ export function ExercisesScreen() {
           </button>
         </section>
       ) : null}
+
+      <aside
+        aria-label={state.activeSession ? "Sesión en curso" : "Resumen de selección"}
+        className={styles.selectionBar}
+        data-session-active={state.activeSession ? "true" : "false"}
+      >
+        <div>
+          <p>
+            {state.activeSession
+              ? "Sesión en curso"
+              : `${selectedIds.length} ejercicios`}
+          </p>
+          <span>
+            {state.activeSession
+              ? state.activeSession.workoutName
+              : selectedIds.length > 6
+                ? "Para una sesión clara, 4 a 6 suelen alcanzar."
+                : `${sectionLabels[activeSection]} · 3 series por ejercicio`}
+          </span>
+        </div>
+        <button
+          disabled={!state.activeSession && selectedIds.length === 0}
+          onClick={startSelection}
+          type="button"
+        >
+          {state.activeSession ? "Retomar sesión" : "Empezar selección"}
+        </button>
+      </aside>
 
       <nav aria-label="Secciones de ejercicios" className={styles.sectionTabs}>
         {sectionOrder.map((sectionId) => (
@@ -396,30 +441,6 @@ export function ExercisesScreen() {
           })}
         </ol>
       </section>
-
-      <footer className={styles.selectionBar}>
-        <div>
-          <p>
-            {state.activeSession
-              ? "Sesión en curso"
-              : `${selectedIds.length} ejercicios`}
-          </p>
-          <span>
-            {state.activeSession
-              ? state.activeSession.workoutName
-              : selectedIds.length > 6
-                ? "Para una sesión clara, 4 a 6 suelen alcanzar."
-                : `${sectionLabels[activeSection]} · 3 series por ejercicio`}
-          </span>
-        </div>
-        <button
-          disabled={!state.activeSession && selectedIds.length === 0}
-          onClick={startSelection}
-          type="button"
-        >
-          {state.activeSession ? "Retomar sesión" : "Empezar selección"}
-        </button>
-      </footer>
 
       <p className={styles.liveMessage} aria-live="polite" role="status">
         {message}

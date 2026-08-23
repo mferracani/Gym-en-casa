@@ -8,9 +8,10 @@ siendo contenido editorial pendiente de validación profesional antes de publica
 - Cuatro secciones fijas: `Pecho + bíceps`, `Espalda + tríceps`, `Hombros` y
   `Abdominales`.
 - Ejercicios compatibles con mancuernas, banco plano, banco inclinado o piso,
-  incluyendo 22 movimientos segmentados: 14 de hombros y 8 de pecho.
+  incluyendo 30 movimientos segmentados: 14 de hombros, 8 de pecho y 8 de
+  espalda.
 - Sin rack, poleas, máquinas ni barra en el catálogo nuevo.
-- Cada ejercicio funcional tiene una lámina de dos posiciones; los 22 ejercicios
+- Cada ejercicio funcional tiene una lámina de dos posiciones; los 30 ejercicios
   derivados de videos incluyen además un modal con el tramo correspondiente de
   YouTube.
 - El usuario puede elegir ejercicios dentro de cualquiera de las cuatro secciones,
@@ -92,6 +93,44 @@ Fuente: [8 EJERCICIOS CON MANCUERNAS PARA AGRANDAR PECHO — Lio Fitness](https:
   sugerencia las variantes declinada, combinadas o asimétricas.
 - Las flexiones sobre mancuernas exigen apoyos hexagonales que no rueden; si el
   equipo no es estable, corresponde usar el piso.
+
+## Adaptación del video de espalda
+
+Fuente: [LOS MEJORES EJERCICIOS PARA AGRANDAR ESPALDA CON MANCUERNAS — Lio Fitness](https://www.youtube.com/watch?v=CCLrgxrr8vM).
+
+- Se conservaron los ocho movimientos y su orden, pero se normalizaron los
+  nombres del autor: sus «jalones» son variantes de remo horizontal y sus
+  «press para trapecio» son encogimientos.
+- `Ver movimiento` usa ocho segmentos útiles medidos sobre el reproductor. El
+  video no ofrece capítulos, subtítulos ni transcripción; los cortes se
+  redondearon al segundo y no se presentan como frame-perfect.
+- El #4 coincide con el remo unilateral apoyado existente y el #5 con el remo
+  bilateral con pecho apoyado. Los otros seis patrones tienen lámina propia.
+- Las ocho variantes son opciones. El preset `Espalda + tríceps · selección
+  video` usa remo inclinado bilateral, remo unilateral y encogimiento apoyado,
+  más dos extensiones de tríceps; suma 15 series.
+- El remo renegado requiere dos mancuernas hexagonales que no rueden. Los
+  agarres supinos y los encogimientos se presentan como alternativas, no como
+  movimientos adicionales obligatorios.
+
+## Adaptación del video de abdominales
+
+Fuente: [10 EJERCICIOS PARA ABDOMEN EN CASA — Lio Fitness](https://www.youtube.com/watch?v=UtRrE-X-KPQ).
+
+- La descripción del autor enumera diez movimientos: triple elevación, wipers,
+  crunch, plancha, elevación de piernas, crunch cruzado, crunch en X, plancha
+  abierta, crunch con giro y plancha lateral.
+- `Ver movimiento` usa diez segmentos medidos sobre el reproductor. Cinco
+  inicios publicados por un usuario del video coincidieron con la inspección;
+  los restantes se redondearon al segundo y no se presentan como frame-perfect.
+- Los diez movimientos quedan disponibles como opciones sin equipamiento. El
+  preset `Abdominales · selección video` usa cuatro: triple elevación, elevación
+  de piernas, crunch en X y plancha lateral dinámica; suma 12 series.
+- Las planchas estáticas conservan la recomendación editorial de trabajar por
+  tiempo, pero quedan fuera del preset mientras la sesión guiada registre sólo
+  repeticiones.
+- Wipers, crunch cruzado y crunch con giro se presentan como alternativas
+  rotacionales; no hace falta acumularlas en la misma sesión.
 
 ## Modelo mínimo futuro para rutinas guardadas
 

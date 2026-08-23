@@ -23,6 +23,7 @@ import type { MuscleSummary as MuscleSummaryType } from "@/types/training";
 
 import { MuscleSummary } from "./muscle-summary";
 import { RoutineExerciseGallery } from "./routine-exercise-gallery";
+import { SmartWorkoutPlanner } from "./smart-workout-planner";
 import { WeekStrip } from "./week-strip";
 
 function capitalize(value: string) {
@@ -162,12 +163,21 @@ export function TodayScreen() {
   const activeTemplate = activeSession
     ? workoutTemplates.find(({ id }) => id === activeSession.templateId)
     : undefined;
-  const displayExercises = activeSession?.exercises ?? template?.exercises ?? [];
+  const completedTemplate = completedToday
+    ? workoutTemplates.find(({ id }) => id === completedToday.templateId)
+    : undefined;
+  const displayExercises =
+    activeSession?.exercises ??
+    completedToday?.exercises ??
+    template?.exercises ??
+    [];
   const displaySectionId =
     activeTemplate?.sectionId ??
-    template?.sectionId ??
+    completedTemplate?.sectionId ??
     exerciseCatalog.find(({ id }) => id === displayExercises[0]?.exerciseId)
-      ?.sectionId;
+      ?.sectionId ??
+    template?.sectionId ??
+    undefined;
   const muscleSummary = displaySectionId
     ? muscleSummaryFor(displaySectionId, displayExercises)
     : [];
@@ -259,6 +269,8 @@ export function TodayScreen() {
         </header>
 
         <WeekStrip days={week} />
+
+        <SmartWorkoutPlanner />
 
         <section
           aria-labelledby="workout-title"

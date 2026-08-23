@@ -16,11 +16,17 @@ import {
   workoutTemplates,
 } from "../../data/training-catalog.ts";
 import { isWorkoutTemplateAvailable } from "../../domain/training/constraints.ts";
+import {
+  createWorkoutTemplateFromDailyPlan,
+  isDailyWorkoutPlanValid,
+  type DailyWorkoutPlan,
+} from "../../domain/training/daily-plan.ts";
 import { createActiveSession, finishSession } from "../../domain/training/session.ts";
 import type {
   ActiveSession,
   AppState,
   CompletedSession,
+  ExerciseSectionId,
   LocalDate,
   Profile,
   WeeklyScheduleDay,
@@ -71,6 +77,7 @@ export interface TrainingContextValue {
     templateId?: string,
   ) => StartWorkoutResult;
   startWorkoutSelection: (exerciseIds: readonly string[]) => StartWorkoutResult;
+  startWorkoutPlan: (plan: DailyWorkoutPlan) => StartWorkoutResult;
   recordSet: (input: {
     exerciseId: string;
     setId: string;
@@ -130,6 +137,20 @@ function createSessionId() {
   return `session-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
+function sectionForCompletedSession(
+  session: CompletedSession,
+): ExerciseSectionId | undefined {
+  const template = workoutTemplates.find(
+    (candidate) => candidate.id === session.templateId,
+  );
+
+  if (template) return template.sectionId;
+
+  return exerciseCatalog.find(
+    (exercise) => exercise.id === session.exercises[0]?.exerciseId,
+  )?.sectionId;
+}
+
 export function TrainingProvider({ children }: { children: ReactNode }) {
   const [runtime, runtimeDispatch] = useReducer(runtimeReducer, undefined, () => ({
     state: createInitialAppState(),
@@ -161,6 +182,34 @@ export function TrainingProvider({ children }: { children: ReactNode }) {
     if (!saveTrainingState(window.localStorage, state)) {
       runtimeDispatch({ type: "storage-warning", warning: "unavailable" });
     }
+  }, [isHydrated, state]);
+
+  useEffect(() => {
+    if (!isHydrated) return;
+
+    const history = state.history.flatMap((session) => {
+      const sectionId = sectionForCompletedSession(session);
+      return sectionId
+        ? [{ id: session.id, completedAt: session.completedAt, sectionId }]
+        : [];
+    });
+
+    void fetch("/api/agent/context", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        syncedAt: new Date().toISOString(),
+        profile: { equipment: state.profile.equipment },
+        activeSession: state.activeSession
+          ? {
+              id: state.activeSession.id,
+              workoutName: state.activeSession.workoutName,
+              startedAt: state.activeSession.startedAt,
+            }
+          : null,
+        history,
+      }),
+    }).catch(() => undefined);
   }, [isHydrated, state]);
 
   const startWorkout = useCallback(
@@ -251,6 +300,39 @@ export function TrainingProvider({ children }: { children: ReactNode }) {
         return { ok: true, session };
       } catch {
         return { ok: false, reason: "invalid-selection" };
+      }
+    },
+    [dispatch, isHydrated, state.activeSession, state.profile],
+  );
+
+  const startWorkoutPlan = useCallback(
+    (plan: DailyWorkoutPlan): StartWorkoutResult => {
+      if (!isHydrated) {
+        return { ok: false, reason: "not-ready" };
+      }
+
+      if (state.activeSession) {
+        return { ok: true, session: state.activeSession };
+      }
+
+      if (!isDailyWorkoutPlanValid(plan, exerciseCatalog, state.profile)) {
+        return { ok: false, reason: "invalid-selection" };
+      }
+
+      try {
+        const session = createActiveSession({
+          sessionId: createSessionId(),
+          scheduledFor: localDateFromDate(new Date()),
+          startedAt: new Date().toISOString(),
+          template: createWorkoutTemplateFromDailyPlan(plan),
+          exercises: exerciseCatalog,
+          profile: state.profile,
+        });
+
+        dispatch({ type: "session/start", session });
+        return { ok: true, session };
+      } catch {
+        return { ok: false, reason: "equipment" };
       }
     },
     [dispatch, isHydrated, state.activeSession, state.profile],
@@ -362,6 +444,7 @@ export function TrainingProvider({ children }: { children: ReactNode }) {
       storageWarning,
       startWorkout,
       startWorkoutSelection,
+      startWorkoutPlan,
       recordSet,
       reopenSet,
       navigateExercise,
@@ -384,6 +467,7 @@ export function TrainingProvider({ children }: { children: ReactNode }) {
       resetLocalData,
       resumeWorkout,
       startWorkout,
+      startWorkoutPlan,
       startWorkoutSelection,
       state,
       storageWarning,

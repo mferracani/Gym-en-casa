@@ -54,7 +54,11 @@ implementada y verificada localmente el 23 de agosto de 2026.
   una API key de OpenAI y no se commitea; la clave pública vive en la app.
 - Una sesión guarda un snapshot de la rutina al comenzar; cambios posteriores de agenda o catálogo no reescriben el historial.
 - Sólo las series `completed` cuentan en métricas y volumen.
-- La agenda inicial conserva su seed, pero el usuario puede asignar cualquier preset publicado a cualquier día.
+- La agenda recurrente reserva miércoles, viernes y domingo para descanso. El
+  sábado queda como entrenamiento opcional, sin una rutina impuesta, y la
+  edición semanal sigue disponible si la preferencia cambia.
+- El schema local v2 migra esa disponibilidad sin tocar perfil, sesión activa
+  ni historial; sólo elimina del sábado la asignación seed anterior.
 - No se implementa temporizador: el descanso se muestra como referencia editorial.
 - No se implementa PWA todavía: faltan íconos aprobados y un service worker correctamente versionado para prometer offline completo.
 - Los assets fueron generados para el proyecto y centralizados mediante un mapping tipado; el press con barra que requiere rack queda fuera de la biblioteca editable.
@@ -70,7 +74,8 @@ implementada y verificada localmente el 23 de agosto de 2026.
 
 ## Verificación
 
-- `npm test`: 80 tests en verde, incluyendo planificación diaria, validación del
+- `npm test`: 81 tests en verde, incluyendo migración segura de agenda,
+  planificación diaria, validación del
   puente local, MCP stateless, control de orígenes, firma y vencimiento de
   propuestas.
 - `npm run lint`: sin errores ni warnings.
@@ -80,6 +85,8 @@ implementada y verificada localmente el 23 de agosto de 2026.
   Agent Bridge y `/mcp` dinámico.
 - QA de flujo: iniciar → registrar `10 × 12,5 kg` → recargar → retomar → revisar → cerrar → reconciliar `125 kg` en Progreso.
 - QA de Semana: editar, guardar, recargar y restaurar un día; se corrigió el solapamiento de acciones sticky con la navegación inferior.
+- QA de disponibilidad semanal en `390 × 844`: miércoles, viernes y domingo se
+  muestran como descanso; sábado se muestra como opcional y continúa editable.
 - QA de Perfil: guardar nombre, recargar y restaurar; feedback de éxito visible.
 - QA responsive: `320 × 568`, `390 × 844` y `1280 × 900`, sin overflow horizontal.
 - Consola verificada en una pestaña nueva sin warnings ni errores.

@@ -72,3 +72,56 @@ test("migra el envelope anterior a la versión vigente", () => {
   assert.equal(result.source, "migrated");
   assert.equal(result.state.profile.id, "local-profile");
 });
+
+test("migra la agenda guardada sin tocar el resto del estado", () => {
+  const storage = createMemoryStorage();
+  const previousState = {
+    ...createInitialAppState(),
+    schedule: [
+      { weekday: 1, kind: "recovery" },
+      {
+        weekday: 2,
+        kind: "strength",
+        workoutTemplateId: "back-video-adaptation",
+      },
+      { weekday: 3, kind: "recovery" },
+      { weekday: 4, kind: "strength" },
+      { weekday: 5, kind: "strength" },
+      {
+        weekday: 6,
+        kind: "strength",
+        workoutTemplateId: "chest-biceps-adaptation",
+      },
+      { weekday: 7, kind: "strength" },
+    ],
+  } as const;
+
+  storage.setItem(
+    "entrena-casa:app-state",
+    JSON.stringify({
+      schemaVersion: 1,
+      updatedAt: "2026-08-23T10:00:00.000Z",
+      data: previousState,
+    }),
+  );
+
+  const result = loadTrainingState(storage, createInitialAppState);
+
+  assert.equal(result.source, "migrated");
+  assert.deepEqual(result.state.profile, previousState.profile);
+  assert.deepEqual(result.state.history, previousState.history);
+  assert.deepEqual(result.state.activeSession, previousState.activeSession);
+  assert.deepEqual(result.state.schedule, [
+    { weekday: 1, kind: "recovery" },
+    {
+      weekday: 2,
+      kind: "strength",
+      workoutTemplateId: "back-video-adaptation",
+    },
+    { weekday: 3, kind: "rest" },
+    { weekday: 4, kind: "strength" },
+    { weekday: 5, kind: "rest" },
+    { weekday: 6, kind: "strength" },
+    { weekday: 7, kind: "rest" },
+  ]);
+});

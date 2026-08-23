@@ -176,10 +176,18 @@ export function WeekScreen() {
               (session) => session.scheduledFor === day.date,
             );
             const activeForDay = state.activeSession?.scheduledFor === day.date;
+            const optionalSaturday =
+              day.weekday === 6 &&
+              scheduledDay.kind === "strength" &&
+              !scheduledDay.workoutTemplateId;
             const statusLabel = activeForDay
               ? "En curso"
               : day.status === "completed"
                 ? "Completado"
+                : optionalSaturday
+                  ? day.status === "today"
+                    ? "Disponible si querés"
+                    : "Opcional"
                 : day.kind === "recovery"
                   ? "Recuperación"
                   : day.kind === "rest"
@@ -189,7 +197,10 @@ export function WeekScreen() {
                       : "Programado";
             const activityLabel =
               scheduledDay.kind === "strength"
-                ? template?.name ?? "Fuerza · contenido pendiente"
+                ? template?.name ??
+                  (optionalSaturday
+                    ? "Entrenamiento opcional"
+                    : "Fuerza · contenido pendiente")
                 : scheduledDay.kind === "recovery"
                   ? "Recuperación"
                   : "Descanso";
@@ -247,7 +258,11 @@ export function WeekScreen() {
                             : ""}
                         </option>
                       ))}
-                      <option value="strength-pending">Fuerza · contenido pendiente</option>
+                      <option value="strength-pending">
+                        {day.weekday === 6
+                          ? "Entrenamiento opcional"
+                          : "Fuerza · contenido pendiente"}
+                      </option>
                       <option value="recovery">Recuperación</option>
                       <option value="rest">Descanso</option>
                     </select>

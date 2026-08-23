@@ -10,7 +10,7 @@ import type {
 } from "../../domain/training/types.ts";
 
 export const STORAGE_KEY = "entrena-casa:app-state";
-export const CURRENT_SCHEMA_VERSION = 1;
+export const CURRENT_SCHEMA_VERSION = 2;
 
 export interface PersistedEnvelope {
   schemaVersion: number;
@@ -145,6 +145,26 @@ function isAppState(value: unknown): value is AppState {
   );
 }
 
+function migrateWeeklySchedule(
+  schedule: readonly WeeklyScheduleDay[],
+): WeeklyScheduleDay[] {
+  return schedule.map((day) => {
+    if (day.weekday === 3 || day.weekday === 5 || day.weekday === 7) {
+      return { weekday: day.weekday, kind: "rest" };
+    }
+
+    if (
+      day.weekday === 6 &&
+      day.kind === "strength" &&
+      day.workoutTemplateId === "chest-biceps-adaptation"
+    ) {
+      return { weekday: 6, kind: "strength" };
+    }
+
+    return { ...day };
+  });
+}
+
 export function migratePersisted(raw: unknown): PersistedEnvelope | null {
   if (!isRecord(raw) || !isFiniteNumber(raw.schemaVersion) || !isString(raw.updatedAt)) {
     return null;
@@ -154,14 +174,26 @@ export function migratePersisted(raw: unknown): PersistedEnvelope | null {
     return null;
   }
 
-  if (raw.schemaVersion !== 0 && raw.schemaVersion !== CURRENT_SCHEMA_VERSION) {
+  if (
+    raw.schemaVersion !== 0 &&
+    raw.schemaVersion !== 1 &&
+    raw.schemaVersion !== CURRENT_SCHEMA_VERSION
+  ) {
     return null;
   }
+
+  const data =
+    raw.schemaVersion === CURRENT_SCHEMA_VERSION
+      ? raw.data
+      : {
+          ...raw.data,
+          schedule: migrateWeeklySchedule(raw.data.schedule),
+        };
 
   return {
     schemaVersion: CURRENT_SCHEMA_VERSION,
     updatedAt: raw.updatedAt,
-    data: raw.data,
+    data,
   };
 }
 

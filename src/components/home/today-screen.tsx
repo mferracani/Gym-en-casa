@@ -160,6 +160,10 @@ export function TodayScreen() {
     (session) => session.scheduledFor === today,
   );
   const activeSession = state.activeSession;
+  const optionalSaturday =
+    weekday === 6 &&
+    scheduledDay?.kind === "strength" &&
+    !scheduledDay.workoutTemplateId;
   const activeTemplate = activeSession
     ? workoutTemplates.find(({ id }) => id === activeSession.templateId)
     : undefined;
@@ -237,6 +241,8 @@ export function TodayScreen() {
       ? "Movilidad + recuperación"
       : scheduledDay?.kind === "rest"
         ? "Descanso"
+        : optionalSaturday
+          ? "Entrenamiento opcional"
         : "Fuerza");
   const heroParts = heroTitle.split(" + ");
   const eyebrow = activeSession
@@ -245,6 +251,8 @@ export function TodayScreen() {
       ? "Entrenamiento completado"
       : template
         ? "Entrenamiento de hoy"
+        : optionalSaturday
+          ? "Disponible si querés"
         : scheduledDay?.kind === "strength"
           ? "Contenido pendiente"
           : "Plan de hoy";
@@ -291,7 +299,13 @@ export function TodayScreen() {
                   <span>{template.exercises.length} ejercicios</span>
                 </>
               ) : (
-                <span>{scheduledDay?.kind === "rest" ? "Recuperá energía" : "Sin rutina publicada"}</span>
+                <span>
+                  {scheduledDay?.kind === "rest"
+                    ? "Recuperá energía"
+                    : optionalSaturday
+                      ? "Elegí una rutina si hoy querés entrenar"
+                      : "Sin rutina publicada"}
+                </span>
               )}
             </p>
 

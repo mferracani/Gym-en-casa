@@ -89,17 +89,15 @@ test("la sugerencia de espalda usa tres tirones y conserva dos ejercicios de tr�
   );
 });
 
-test("la agenda inicial sólo asigna Pecho + bíceps al sábado", () => {
-  const assignedTemplates = weeklyScheduleSeed.filter(
-    (day) => day.workoutTemplateId !== undefined,
-  );
-
-  assert.deepEqual(assignedTemplates, [
-    {
-      weekday: 6,
-      kind: "strength",
-      workoutTemplateId: "chest-biceps-adaptation",
-    },
+test("la agenda inicial reserva miércoles, viernes y domingo para descanso", () => {
+  assert.deepEqual(weeklyScheduleSeed, [
+    { weekday: 1, kind: "strength" },
+    { weekday: 2, kind: "strength" },
+    { weekday: 3, kind: "rest" },
+    { weekday: 4, kind: "strength" },
+    { weekday: 5, kind: "rest" },
+    { weekday: 6, kind: "strength" },
+    { weekday: 7, kind: "rest" },
   ]);
 });
 

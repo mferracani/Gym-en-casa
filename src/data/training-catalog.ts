@@ -1072,10 +1072,10 @@ export const defaultProfile: Profile = {
 export const weeklyScheduleSeed = [
   { weekday: 1, kind: "strength" },
   { weekday: 2, kind: "strength" },
-  { weekday: 3, kind: "recovery" },
+  { weekday: 3, kind: "rest" },
   { weekday: 4, kind: "strength" },
-  { weekday: 5, kind: "strength" },
-  { weekday: 6, kind: "strength", workoutTemplateId: "chest-biceps-adaptation" },
+  { weekday: 5, kind: "rest" },
+  { weekday: 6, kind: "strength" },
   { weekday: 7, kind: "rest" },
 ] satisfies WeeklyScheduleDay[];
 

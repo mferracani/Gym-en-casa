@@ -6,7 +6,7 @@ import { Sparkle } from "@phosphor-icons/react/Sparkle";
 import { WarningCircle } from "@phosphor-icons/react/WarningCircle";
 import { X } from "@phosphor-icons/react/X";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { exerciseCatalog } from "@/data/training-catalog";
 import {
@@ -16,6 +16,10 @@ import {
   type PreferredTrainingSection,
 } from "@/domain/training/daily-plan";
 import type { AgentWorkoutProposal } from "@/server/agent-bridge-store";
+import {
+  verifyWorkoutProposalFragment,
+} from "@/lib/agent/workout-proposal-link";
+import { getWorkoutProposalPublicKey } from "@/lib/agent/workout-proposal-public-key";
 import { useTraining } from "@/state/training/use-training";
 
 import styles from "./smart-workout-planner.module.css";
@@ -55,22 +59,118 @@ async function decideProposal(
   }
 }
 
+function clearProposalFragment() {
+  const parameters = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+  parameters.delete("proposal");
+  const nextFragment = parameters.toString();
+  window.history.replaceState(
+    null,
+    "",
+    `${window.location.pathname}${window.location.search}${nextFragment ? `#${nextFragment}` : ""}`,
+  );
+}
+
 export function SmartWorkoutPlanner() {
   const router = useRouter();
-  const { startWorkoutPlan, state } = useTraining();
+  const { isHydrated, startWorkoutPlan, state } = useTraining();
   const [isOpen, setIsOpen] = useState(false);
   const [preferredSection, setPreferredSection] =
     useState<PreferredTrainingSection>("recommend");
   const [plan, setPlan] = useState<DailyWorkoutPlan | null>(null);
   const [agentProposal, setAgentProposal] =
     useState<AgentWorkoutProposal | null>(null);
+  const [proposalHash, setProposalHash] = useState("");
+  const [deepLinkRequestId, setDeepLinkRequestId] = useState<string | null>(null);
   const [feedback, setFeedback] = useState("");
+  const processedHash = useRef("");
   const catalogById = useMemo(
     () => new Map(exerciseCatalog.map((exercise) => [exercise.id, exercise])),
     [],
   );
 
   useEffect(() => {
+    function syncHash() {
+      setProposalHash(window.location.hash);
+    }
+
+    syncHash();
+    window.addEventListener("hashchange", syncHash);
+    return () => window.removeEventListener("hashchange", syncHash);
+  }, []);
+
+  useEffect(() => {
+    if (
+      !isHydrated ||
+      !proposalHash.includes("proposal=") ||
+      processedHash.current === proposalHash
+    ) {
+      return;
+    }
+
+    processedHash.current = proposalHash;
+    let cancelled = false;
+
+    async function loadDeepLinkProposal() {
+      try {
+        const result = await verifyWorkoutProposalFragment(
+          proposalHash,
+          await getWorkoutProposalPublicKey(),
+        );
+        if (cancelled) return;
+
+        if (!result.ok) {
+          setFeedback(
+            result.reason === "expired"
+              ? "La propuesta de ChatGPT venció. Pedí una nueva para este entrenamiento."
+              : "El enlace de propuesta no es válido o no fue firmado por Entrena Casa.",
+          );
+          setIsOpen(true);
+          clearProposalFragment();
+          setProposalHash("");
+          return;
+        }
+
+        const nextPlan = generateDailyWorkoutPlan({
+          preferredSection: result.proposal.preferredSection,
+          source: result.proposal.source,
+          context: {
+            history: state.history,
+            profile: state.profile,
+            now: new Date().toISOString(),
+          },
+        });
+        if (!isDailyWorkoutPlanValid(nextPlan, exerciseCatalog, state.profile)) {
+          throw new Error("La propuesta no es compatible con tu equipo actual.");
+        }
+
+        setAgentProposal(null);
+        setDeepLinkRequestId(result.proposal.requestId);
+        setPreferredSection(result.proposal.preferredSection);
+        setPlan(nextPlan);
+        setIsOpen(true);
+        setFeedback(
+          "Propuesta firmada de ChatGPT. Revisala: todavía no se guardó ni inició nada.",
+        );
+      } catch (error) {
+        if (cancelled) return;
+        setFeedback(
+          error instanceof Error
+            ? error.message
+            : "No se pudo revisar la propuesta de ChatGPT.",
+        );
+        setIsOpen(true);
+      }
+    }
+
+    void loadDeepLinkProposal();
+    return () => {
+      cancelled = true;
+    };
+  }, [isHydrated, proposalHash, state.history, state.profile]);
+
+  useEffect(() => {
+    if (deepLinkRequestId) return;
+
     let cancelled = false;
 
     async function loadPendingProposal() {
@@ -114,12 +214,18 @@ export function SmartWorkoutPlanner() {
       cancelled = true;
       window.clearInterval(intervalId);
     };
-  }, [agentProposal?.id]);
+  }, [agentProposal?.id, deepLinkRequestId]);
 
   async function generatePlan() {
     try {
       if (agentProposal) {
         await decideProposal(agentProposal.id, "rejected");
+      }
+
+      if (deepLinkRequestId) {
+        clearProposalFragment();
+        setProposalHash("");
+        setDeepLinkRequestId(null);
       }
 
       const nextPlan = generateDailyWorkoutPlan({
@@ -158,6 +264,11 @@ export function SmartWorkoutPlanner() {
 
     setPlan(null);
     setAgentProposal(null);
+    if (deepLinkRequestId) {
+      clearProposalFragment();
+      setProposalHash("");
+      setDeepLinkRequestId(null);
+    }
     setFeedback("");
     setIsOpen(false);
   }
@@ -196,6 +307,12 @@ export function SmartWorkoutPlanner() {
           : "No se pudo iniciar esta rutina. Revisá la selección.",
       );
       return;
+    }
+
+    if (deepLinkRequestId) {
+      clearProposalFragment();
+      setProposalHash("");
+      setDeepLinkRequestId(null);
     }
 
     router.push("/entrenar");

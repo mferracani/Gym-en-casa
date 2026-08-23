@@ -33,6 +33,17 @@ El puente queda en `http://127.0.0.1:8787/mcp`. Las propuestas externas siempre
 requieren confirmación dentro de la app. Configuración y límites:
 `docs/agent-bridge.md`.
 
+Para ChatGPT alojado, la aplicación incluye además `/mcp`: un endpoint público
+stateless que puede desplegarse en Vercel. Sólo publica catálogo y propuestas
+editoriales; no accede al historial local. La propuesta llega como un enlace
+firmado y temporal y recién crea una sesión después de `Usar esta rutina`.
+
+El deploy requiere una clave Ed25519 propia en
+`ENTRENA_CASA_PROPOSAL_SIGNING_KEY`. Esa clave sólo firma enlaces: no es una API
+key de OpenAI y no produce consumo de modelos. El destino se configura con
+`ENTRENA_CASA_PUBLIC_APP_URL` y puede seguir siendo `http://localhost:3000/`
+para uso personal en la misma Mac.
+
 ## Verificación
 
 ```bash

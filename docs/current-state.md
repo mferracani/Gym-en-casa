@@ -2,7 +2,8 @@
 
 ## Fase
 
-MVP funcional local-first completado y verificado localmente el 22 de agosto de 2026.
+MVP funcional local-first completado; conexión MCP pública para ChatGPT
+implementada y verificada localmente el 23 de agosto de 2026.
 
 ## Architecture & Stack
 
@@ -22,6 +23,11 @@ MVP funcional local-first completado y verificado localmente el 22 de agosto de 
   ni sincronización entre dispositivos.
 - El comando de desarrollo enlaza Next a `127.0.0.1`; las rutas del puente se
   deshabilitan fuera de desarrollo y el MCP rechaza hosts no-loopback.
+- MCP público stateless en `/mcp`: publica sólo catálogo, una base editorial y
+  enlaces de propuesta Ed25519 con 15 minutos de vigencia. No importa el store
+  del bridge, no lee datos personales y no conserva estado en Vercel.
+- La app verifica la firma del enlace en el navegador y genera el plan con su
+  historial y equipo locales. Abrir el enlace no guarda ni inicia una sesión.
 
 ## Producto implementado
 
@@ -41,6 +47,11 @@ MVP funcional local-first completado y verificado localmente el 22 de agosto de 
 - ChatGPT/OpenClaw no pueden iniciar ni sobrescribir una sesión de forma
   silenciosa. El puente sólo deja una propuesta; el usuario la acepta o rechaza
   en `Hoy`.
+- El MCP público permanece anónimo porque sus tres herramientas son de lectura
+  y no exponen datos privados. `queue_workout_proposal` conserva su nombre por
+  compatibilidad, pero sólo crea un enlace firmado; no encola una escritura.
+- La clave Ed25519 privada vive únicamente en el entorno de despliegue. No es
+  una API key de OpenAI y no se commitea; la clave pública vive en la app.
 - Una sesión guarda un snapshot de la rutina al comenzar; cambios posteriores de agenda o catálogo no reescriben el historial.
 - Sólo las series `completed` cuentan en métricas y volumen.
 - La agenda inicial conserva su seed, pero el usuario puede asignar cualquier preset publicado a cualquier día.
@@ -59,13 +70,14 @@ MVP funcional local-first completado y verificado localmente el 22 de agosto de 
 
 ## Verificación
 
-- `npm test`: 72 tests en verde, incluyendo planificación diaria, validación del
-  puente, idempotencia y control de orígenes.
+- `npm test`: 80 tests en verde, incluyendo planificación diaria, validación del
+  puente local, MCP stateless, control de orígenes, firma y vencimiento de
+  propuestas.
 - `npm run lint`: sin errores ni warnings.
 - `npm run typecheck`: TypeScript estricto en verde.
 - `npm run build`: build de producción exitoso con webpack; seis rutas de
-  producto estáticas, `_not-found` y cuatro handlers dinámicos locales para el
-  Agent Bridge.
+  producto estáticas, `_not-found`, cuatro handlers dinámicos locales para el
+  Agent Bridge y `/mcp` dinámico.
 - QA de flujo: iniciar → registrar `10 × 12,5 kg` → recargar → retomar → revisar → cerrar → reconciliar `125 kg` en Progreso.
 - QA de Semana: editar, guardar, recargar y restaurar un día; se corrigió el solapamiento de acciones sticky con la navegación inferior.
 - QA de Perfil: guardar nombre, recargar y restaurar; feedback de éxito visible.
@@ -78,6 +90,10 @@ MVP funcional local-first completado y verificado localmente el 22 de agosto de 
   Espalda + tríceps y propuesta de Abdominales visible como `Propuesta de
   OpenClaw`; la propuesta de prueba fue rechazada y un origen externo recibió
   `403`.
+- QA MCP público real: handshake `2025-11-25`, listado exclusivo de tres
+  herramientas read-only y enlace firmado de Hombros. En `390 × 844`, la app
+  mostró 4 ejercicios, 12 series, 42 minutos y RIR 3 con el mensaje explícito
+  de que todavía no guardó ni inició nada.
 - QA de Espalda: 11 opciones visibles, 8 movimientos ordenados como el video,
   sugerencia funcional de 5 ejercicios, 11 imágenes cargadas y clips extremos
   verificados en `0–34 s` y `155–181 s`.
@@ -99,6 +115,13 @@ MVP funcional local-first completado y verificado localmente el 22 de agosto de 
 - La sesión personalizada no se guarda aún como preset reutilizable ni puede
   asignarse a un día; la semana permite asignar sólo los presets publicados.
 - No hay backup: limpiar el navegador o cambiar de dispositivo elimina el historial local.
+- ChatGPT no recibe historial ni equipo local: debe pedir una sección explícita.
+  La personalización final ocurre recién al abrir el enlace en la app.
+- Si `ENTRENA_CASA_PUBLIC_APP_URL` apunta a `localhost`, la Mac y la app local
+  deben estar encendidas para abrir la propuesta. Un deploy completo de la app
+  usa otro origen y, por diseño, otro `localStorage`.
+- Rotar la clave de firma invalida enlaces pendientes y exige desplegar juntos
+  la nueva clave pública de la app y la privada del servidor.
 - Los assets generados requieren revisión de similitud y validación biomecánica profesional antes de una publicación externa.
 
 ## Próximos pasos recomendados
@@ -108,6 +131,7 @@ MVP funcional local-first completado y verificado localmente el 22 de agosto de 
 3. Hacer una prueba personal de uso durante una semana y registrar fricciones reales.
 4. Decidir si vale la pena guardar rutinas generadas como presets y asignarlas a días; en
    ese caso, versionar y migrar explícitamente el almacenamiento local.
-5. Si se quiere conectar ChatGPT alojado, diseñar primero autenticación y un
-   despliegue HTTPS del MCP; no publicar el puente local sin esa capa.
-6. Recién después decidir si hacen falta PWA/offline completo, sincronización o backend.
+5. Desplegar `/mcp` en una URL HTTPS estable, cargar la clave privada en Vercel
+   y registrar el endpoint en ChatGPT Developer Mode.
+6. Mantener el bridge con contexto personal únicamente en loopback; no publicarlo.
+7. Recién después decidir si hacen falta PWA/offline completo, sincronización o backend.

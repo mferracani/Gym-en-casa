@@ -11,8 +11,10 @@
 - No implementar autenticación, Supabase, backend ni sincronización remota hasta
   que el alcance cambie explícitamente. Se permite el planificador diario local
   determinístico y el Agent Bridge MCP loopback aprobados el 22 de agosto de
-  2026; no requieren API key y toda propuesta externa exige confirmación en la
-  app.
+  2026, más el MCP público stateless aprobado el 23 de agosto de 2026. El MCP
+  público sólo expone catálogo y enlaces de propuesta firmados: no lee datos
+  locales, no persiste estado, no requiere una API key de modelos y toda
+  propuesta externa exige confirmación en la app.
 - Español de Argentina, tono directo y cercano.
 
 ## Stack

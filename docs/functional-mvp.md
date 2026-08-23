@@ -4,7 +4,7 @@
 
 El primer MVP funcional completa el ciclo de entrenamiento sin backend: el usuario ve qué le toca, inicia una sesión, registra series, repeticiones y peso, la cierra y consulta su semana y progreso. Los datos se guardan únicamente en el navegador mediante almacenamiento local.
 
-No se incorpora autenticación, Supabase, APIs ni sincronización entre dispositivos. La persistencia local es necesaria para que el registro conserve valor al recargar; no constituye una base de datos de producto ni ofrece recuperación fuera de ese navegador.
+No se incorpora autenticación, Supabase, APIs remotas ni sincronización entre dispositivos. La persistencia local es necesaria para que el registro conserve valor al recargar; no constituye una base de datos de producto ni ofrece recuperación fuera de ese navegador.
 
 ## Hipótesis
 
@@ -15,6 +15,7 @@ Si una persona que retoma fuerza puede abrir la rutina que le corresponde, recor
 | Área | Ruta | Resultado esperado |
 | --- | --- | --- |
 | Hoy | `/` | Ver fecha real, rutina disponible, seguridad, estado semanal y CTA contextual. |
+| Sugerencia diaria | `/` | Elegir una sección o pedir una recomendación local y revisar el plan antes de iniciar. |
 | Sesión activa | `/entrenar` | Recorrer ejercicios y registrar peso y repeticiones por serie. |
 | Semana | `/semana` | Consultar los siete días y distinguir pendiente, en curso, completado, descanso o contenido pendiente. |
 | Progreso | `/progreso` | Consultar sesiones cerradas y evolución descriptiva por ejercicio. |
@@ -42,6 +43,12 @@ La navegación principal debe llevar a rutas reales; no quedan tabs simulados o 
 - El CTA refleja ese estado: iniciar, retomar o ver resumen.
 - La semana no muestra días completados si no existen registros locales que lo respalden.
 - La adaptación y la restricción por falta de rack permanecen visibles.
+- Permite elegir `Pecho + bíceps`, `Espalda + tríceps`, `Hombros`,
+  `Abdominales` o pedir una sección recomendada.
+- La recomendación usa sólo historial, equipo y plantillas locales. Informa RIR,
+  volumen, progresión y límites sin presentarse como diagnóstico profesional.
+- Una propuesta externa de ChatGPT/OpenClaw requiere aceptación explícita antes
+  de convertirse en sesión.
 
 ### Sesión activa
 
@@ -102,25 +109,30 @@ El acceso a almacenamiento local debe ocurrir sólo del lado cliente y manejar u
 - Reemplazar fechas y estados de completado estáticos por estados derivados de fecha y logs locales.
 - Usar kg como unidad única; admitir decimales.
 - Mostrar el descanso como referencia, sin temporizador en esta etapa.
-- No generar recomendaciones de peso, progresión, recuperación, dolor o salud.
-- No publicar imágenes de ejercicios hasta contar con licencia y atribución verificables.
+- Sugerir progresión sólo mediante una regla conservadora y verificable: subir
+  la carga mínima después de dos sesiones con técnica estable y el RIR objetivo.
+  No recomendar un peso concreto, entrenar con dolor ni diagnosticar salud.
+- Registrar cada imagen publicada en `docs/asset-attributions.md` y no incorporar
+  recursos de terceros sin licencia verificable.
 - No permitir edición retroactiva de sesiones cerradas en el MVP.
 
 ## Riesgos y decisiones pendientes
 
 | Riesgo o decisión | Impacto | Resolución requerida |
 | --- | --- | --- |
-| Sólo está documentada en detalle la rutina `Pecho + bíceps`. | No es correcto inventar los otros cuatro días de fuerza. | Implementar el flujo completo para la rutina disponible; mantener los demás días como contenido pendiente hasta recibir contenido validado. |
+| El catálogo cubre torso y abdominales, pero no piernas. | No permite prometer un plan corporal completo. | Mantener la advertencia visible y validar una sección de piernas antes de incorporarla al motor. |
 | Las indicaciones actuales son contenido mock. | No se debe presentar la app como reemplazo de un profesional. | Validar rutina, cues y mensajes con un profesional antes de uso real. |
 | “Progreso” puede interpretarse como recomendación de sobrecarga. | Riesgo de sugerencias no validadas. | Limitar el MVP a historial y métricas descriptivas reconciliables con los logs. |
 | Los datos viven en un solo navegador. | Se pueden perder al limpiar datos o cambiar de dispositivo. | Informar el límite y postergar sincronización hasta que exista una necesidad demostrada. |
 
 ## Fuera de alcance
 
-- Autenticación, cuentas, backend, Supabase, APIs y sincronización entre dispositivos.
+- Autenticación, cuentas, backend remoto, Supabase y sincronización entre dispositivos.
 - Integraciones con Apple Health, wearables, calendario o notificaciones.
-- Temporizador, cronómetro, música, video, cámara o IA.
-- Rutinas generadas automáticamente, recomendaciones de peso o progresión.
+- Temporizador, cronómetro, música o cámara.
+- Modelos generativos dentro de la app, API keys pagas o ejecución autónoma sin
+  confirmación del usuario.
+- Recomendaciones de peso concreto, diagnóstico o prescripción ante dolor.
 - Diagnóstico médico, tratamiento, consejos ante dolor o prescripción de entrenamiento.
 - Edición de rutinas, planes completos o sesiones históricas.
 - Social, rankings, desafíos, gamificación o pagos.
@@ -135,6 +147,8 @@ El acceso a almacenamiento local debe ocurrir sólo del lado cliente y manejar u
 - La restricción por falta de rack sigue visible y el press de pecho con barra no se ofrece como predeterminado.
 - Los estados vacío, de almacenamiento no disponible y de reinicio de datos son claros y recuperables.
 - Tests, lint, typecheck y build quedan en verde antes de declarar el MVP verificado.
+- El puente MCP escucha sólo en loopback, rechaza orígenes web no confiables y
+  no se publica sin autenticación.
 - Se realiza QA visual y de accesibilidad en 390 × 844 px y escritorio antes de la salida local.
 
 ## Secuencia de implementación

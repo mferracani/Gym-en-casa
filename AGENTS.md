@@ -4,9 +4,15 @@
 
 - Aplicación web mobile-first para acompañar entrenamiento de fuerza en casa.
 - El MVP funcional local-first incluye `Hoy`, sesión guiada, `Semana`, `Progreso` y `Perfil`.
-- La única rutina editorial validada para el MVP es `Pecho + bíceps`; los demás días de fuerza deben mostrarse como contenido pendiente, sin inventar entrenamiento.
+- El catálogo editorial publicado cubre `Pecho + bíceps`, `Espalda + tríceps`,
+  `Hombros` y `Abdominales`; la persona puede elegir cualquiera de esas
+  secciones sin que la agenda imponga una rutina fija.
 - Sesiones, historial, perfil y agenda se persisten con un esquema versionado en `localStorage`.
-- No implementar autenticación, Supabase, backend, sincronización remota ni recomendaciones automáticas hasta que el alcance cambie explícitamente.
+- No implementar autenticación, Supabase, backend ni sincronización remota hasta
+  que el alcance cambie explícitamente. Se permite el planificador diario local
+  determinístico y el Agent Bridge MCP loopback aprobados el 22 de agosto de
+  2026; no requieren API key y toda propuesta externa exige confirmación en la
+  app.
 - Español de Argentina, tono directo y cercano.
 
 ## Stack

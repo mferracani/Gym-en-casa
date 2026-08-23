@@ -16,6 +16,23 @@ npm run dev
 
 Abrí http://localhost:3000.
 
+## Sugerencia local y conexión con agentes
+
+`Hoy` incluye un planificador determinístico que usa el historial local, el
+equipo disponible y plantillas del catálogo. No llama a una API de IA ni tiene
+costo por generación.
+
+Para conectar un cliente MCP local como OpenClaw:
+
+```bash
+npm run agent:install
+npm run agent:start
+```
+
+El puente queda en `http://127.0.0.1:8787/mcp`. Las propuestas externas siempre
+requieren confirmación dentro de la app. Configuración y límites:
+`docs/agent-bridge.md`.
+
 ## Verificación
 
 ```bash
@@ -42,5 +59,6 @@ npm run build
 - `docs/contenido-ejercicios.md`
 - `docs/asset-attributions.md`
 - `docs/current-state.md`
+- `docs/agent-bridge.md`
 
 La referencia visual vive en `design/mock-home.png` y no se sirve como asset de producto.

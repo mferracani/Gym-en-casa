@@ -4,12 +4,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --hostname 127.0.0.1",
     "build": "next build --webpack",
     "start": "next start",
+    "agent:install": "npm --prefix agent-bridge install",
+    "agent:start": "npm --prefix agent-bridge start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "test": "find src -name '*.test.ts' -print0 | xargs -0 node --test"
+    "test": "find src agent-bridge -path '*/node_modules' -prune -o -name '*.test.*' -print0 | xargs -0 node --test"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",

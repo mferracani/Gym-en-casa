@@ -49,15 +49,21 @@ El Sprint 1 queda como base visual de `Hoy`. El siguiente alcance es un MVP func
 - El historial, la semana y el progreso se derivan de esos registros locales; los datos se guardan sólo en el navegador y dispositivo actual.
 - La navegación incluye destinos reales para `Hoy`, `Semana`, `Progreso` y `Perfil`; el perfil queda limitado a nombre opcional, equipo y reinicio seguro de datos locales.
 - La falta de rack sigue siendo una restricción visible y el press de pecho con barra no se habilita como opción predeterminada.
-- No se implementan autenticación, Supabase, backend, APIs, sincronización entre dispositivos ni dependencias nuevas para este MVP.
+- `Hoy` permite pedir una sugerencia por sección. El motor es local y
+  determinístico: no usa una API key, no consume un modelo y no agrega costo por
+  generación.
+- Un Agent Bridge MCP opcional permite que OpenClaw u otro cliente local lea el
+  contexto reducido y deje una propuesta de rutina que el usuario debe aceptar.
+- No se implementan autenticación, Supabase, backend remoto ni sincronización entre dispositivos.
 
 El detalle de alcance, criterios, riesgos y release criteria vive en `docs/functional-mvp.md`.
 
 ## Fuera de alcance del MVP funcional
 
-- temporizador, cronómetro, música, video, cámara o IA;
-- recomendaciones de peso, progresión, recuperación, dolor o salud;
-- rutinas generadas automáticamente, edición de planes o de sesiones históricas;
+- temporizador, cronómetro, música o cámara;
+- IA generativa integrada, API keys pagas o agentes con escritura autónoma;
+- recomendaciones de peso concreto, dolor o salud;
+- edición de sesiones históricas;
 - integraciones con wearables, Apple Health, calendario o notificaciones;
 - social, rankings, desafíos, gamificación o pagos;
 - assets de ejercicios sin licencia y atribución verificables;

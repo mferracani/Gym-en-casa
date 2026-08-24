@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { CloudSyncProvider } from "@/state/cloud/cloud-sync-provider";
 import { TrainingProvider } from "@/state/training/training-provider";
 
 import "./globals.css";
@@ -17,7 +18,9 @@ export default function RootLayout({
   return (
     <html data-scroll-behavior="smooth" lang="es-AR">
       <body>
-        <TrainingProvider>{children}</TrainingProvider>
+        <TrainingProvider>
+          <CloudSyncProvider>{children}</CloudSyncProvider>
+        </TrainingProvider>
       </body>
     </html>
   );

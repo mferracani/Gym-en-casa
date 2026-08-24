@@ -2,7 +2,12 @@
 
 Aplicación web mobile-first para acompañar entrenamiento de fuerza en casa. El MVP funciona de punta a punta en el navegador: planificación semanal, sesión guiada, registro de series, historial, progreso y perfil de equipamiento.
 
-Los datos se guardan en `localStorage` y no se sincronizan entre dispositivos. La biblioteca permite elegir ejercicios por sección y ofrece presets editables de `Pecho + bíceps`, `Espalda + tríceps`, `Hombros` y `Abdominales`; la agenda no impone un grupo muscular fijo por día.
+Los datos se guardan primero en `localStorage`. Si configurás Firebase Spark y
+conectás tu cuenta de Google desde `Perfil`, la app mantiene además una copia
+remota para recuperar y sincronizar el entrenamiento entre dispositivos. La
+biblioteca permite elegir ejercicios por sección y ofrece presets editables de
+`Pecho + bíceps`, `Espalda + tríceps`, `Hombros` y `Abdominales`; la agenda no
+impone un grupo muscular fijo por día.
 
 Los ejercicios derivados de los videos de referencia conservan su orden,
 lámina anatómica propia y un acceso al tramo exacto del movimiento en YouTube.
@@ -53,6 +58,12 @@ npm run typecheck
 npm run build
 ```
 
+## Sincronización opcional
+
+La configuración de Firebase, el modelo de datos y el despliegue de reglas se
+documentan en `docs/firebase-sync.md`. La app no necesita Firebase para abrir,
+entrenar ni conservar datos en el navegador.
+
 ## Recorridos disponibles
 
 - `/`: rutina y estado real de hoy.
@@ -71,5 +82,6 @@ npm run build
 - `docs/asset-attributions.md`
 - `docs/current-state.md`
 - `docs/agent-bridge.md`
+- `docs/firebase-sync.md`
 
 La referencia visual vive en `design/mock-home.png` y no se sirve como asset de producto.

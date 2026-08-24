@@ -21,6 +21,7 @@ import {
   isDailyWorkoutPlanValid,
   type DailyWorkoutPlan,
 } from "../../domain/training/daily-plan.ts";
+import type { LocalTrainingSnapshot } from "../../domain/training/cloud-sync.ts";
 import { createActiveSession, finishSession } from "../../domain/training/session.ts";
 import type {
   ActiveSession,
@@ -72,6 +73,7 @@ export interface TrainingContextValue {
   state: AppState;
   isHydrated: boolean;
   storageWarning?: StorageWarning;
+  localSnapshot: LocalTrainingSnapshot;
   startWorkout: (
     scheduledFor?: LocalDate,
     templateId?: string,
@@ -92,6 +94,7 @@ export interface TrainingContextValue {
   finishWorkout: () => FinishWorkoutResult;
   updateProfile: (profile: Profile) => void;
   updateSchedule: (day: WeeklyScheduleDay) => void;
+  replaceStateFromCloud: (state: AppState) => void;
   resetLocalData: () => void;
 }
 
@@ -100,12 +103,15 @@ export const TrainingContext = createContext<TrainingContextValue | null>(null);
 interface RuntimeState {
   state: AppState;
   isHydrated: boolean;
+  storageSource: LoadResult["source"];
+  storageUpdatedAt: string | null;
   storageWarning?: StorageWarning;
 }
 
 type RuntimeAction =
   | { type: "hydrate"; result: LoadResult }
-  | { type: "training"; action: TrainingAction }
+  | { type: "training"; action: TrainingAction; updatedAt: string }
+  | { type: "cloud-hydrate"; state: AppState; updatedAt: string }
   | { type: "storage-warning"; warning: StorageWarning };
 
 function runtimeReducer(
@@ -117,12 +123,23 @@ function runtimeReducer(
       return {
         state: action.result.state,
         isHydrated: true,
+        storageSource: action.result.source,
+        storageUpdatedAt: action.result.updatedAt,
         storageWarning: action.result.warning,
       };
     case "training":
       return {
         ...runtime,
         state: trainingReducer(runtime.state, action.action),
+        storageSource: "stored",
+        storageUpdatedAt: action.updatedAt,
+      };
+    case "cloud-hydrate":
+      return {
+        ...runtime,
+        state: action.state,
+        storageSource: "stored",
+        storageUpdatedAt: action.updatedAt,
       };
     case "storage-warning":
       return { ...runtime, storageWarning: action.warning };
@@ -152,15 +169,31 @@ function sectionForCompletedSession(
 }
 
 export function TrainingProvider({ children }: { children: ReactNode }) {
-  const [runtime, runtimeDispatch] = useReducer(runtimeReducer, undefined, () => ({
-    state: createInitialAppState(),
-    isHydrated: false,
-    storageWarning: undefined,
-  }));
-  const { state, isHydrated, storageWarning } = runtime;
+  const [runtime, runtimeDispatch] = useReducer(
+    runtimeReducer,
+    undefined,
+    (): RuntimeState => ({
+      state: createInitialAppState(),
+      isHydrated: false,
+      storageSource: "default",
+      storageUpdatedAt: null,
+      storageWarning: undefined,
+    }),
+  );
+  const {
+    state,
+    isHydrated,
+    storageSource,
+    storageUpdatedAt,
+    storageWarning,
+  } = runtime;
   const dispatch = useCallback(
     (action: TrainingAction) => {
-      runtimeDispatch({ type: "training", action });
+      runtimeDispatch({
+        type: "training",
+        action,
+        updatedAt: new Date().toISOString(),
+      });
     },
     [],
   );
@@ -179,10 +212,16 @@ export function TrainingProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    if (!saveTrainingState(window.localStorage, state)) {
+    if (
+      !saveTrainingState(
+        window.localStorage,
+        state,
+        storageUpdatedAt ?? new Date().toISOString(),
+      )
+    ) {
       runtimeDispatch({ type: "storage-warning", warning: "unavailable" });
     }
-  }, [isHydrated, state]);
+  }, [isHydrated, state, storageUpdatedAt]);
 
   useEffect(() => {
     if (!isHydrated) return;
@@ -426,6 +465,14 @@ export function TrainingProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "schedule/update", day });
   }, [dispatch]);
 
+  const replaceStateFromCloud = useCallback((cloudState: AppState) => {
+    runtimeDispatch({
+      type: "cloud-hydrate",
+      state: cloudState,
+      updatedAt: new Date().toISOString(),
+    });
+  }, []);
+
   const resetLocalData = useCallback(() => {
     const initialState = createInitialAppState();
     dispatch({ type: "state/reset", state: initialState });
@@ -442,6 +489,11 @@ export function TrainingProvider({ children }: { children: ReactNode }) {
       state,
       isHydrated,
       storageWarning,
+      localSnapshot: {
+        state,
+        source: storageSource,
+        updatedAt: storageUpdatedAt,
+      },
       startWorkout,
       startWorkoutSelection,
       startWorkoutPlan,
@@ -454,6 +506,7 @@ export function TrainingProvider({ children }: { children: ReactNode }) {
       finishWorkout,
       updateProfile,
       updateSchedule,
+      replaceStateFromCloud,
       resetLocalData,
     }),
     [
@@ -464,12 +517,15 @@ export function TrainingProvider({ children }: { children: ReactNode }) {
       pauseWorkout,
       recordSet,
       reopenSet,
+      replaceStateFromCloud,
       resetLocalData,
       resumeWorkout,
       startWorkout,
       startWorkoutPlan,
       startWorkoutSelection,
       state,
+      storageSource,
+      storageUpdatedAt,
       storageWarning,
       updateProfile,
       updateSchedule,

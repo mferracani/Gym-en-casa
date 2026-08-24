@@ -21,6 +21,7 @@ export interface PersistedEnvelope {
 export interface LoadResult {
   state: AppState;
   source: "default" | "stored" | "migrated";
+  updatedAt: string | null;
   warning?: "corrupt" | "unsupported" | "unavailable";
 }
 
@@ -206,11 +207,16 @@ export function loadTrainingState(
   try {
     serialized = storage.getItem(STORAGE_KEY);
   } catch {
-    return { state: createDefaultState(), source: "default", warning: "unavailable" };
+    return {
+      state: createDefaultState(),
+      source: "default",
+      updatedAt: null,
+      warning: "unavailable",
+    };
   }
 
   if (serialized === null) {
-    return { state: createDefaultState(), source: "default" };
+    return { state: createDefaultState(), source: "default", updatedAt: null };
   }
 
   try {
@@ -222,6 +228,7 @@ export function loadTrainingState(
       return {
         state: createDefaultState(),
         source: "default",
+        updatedAt: null,
         warning:
           isFiniteNumber(schemaVersion) && schemaVersion > CURRENT_SCHEMA_VERSION
             ? "unsupported"
@@ -234,19 +241,26 @@ export function loadTrainingState(
       source: migrated.schemaVersion === CURRENT_SCHEMA_VERSION && schemaVersion === CURRENT_SCHEMA_VERSION
         ? "stored"
         : "migrated",
+      updatedAt: migrated.updatedAt,
     };
   } catch {
-    return { state: createDefaultState(), source: "default", warning: "corrupt" };
+    return {
+      state: createDefaultState(),
+      source: "default",
+      updatedAt: null,
+      warning: "corrupt",
+    };
   }
 }
 
 export function saveTrainingState(
   storage: Pick<ReadableStorage, "setItem">,
   state: AppState,
+  updatedAt = new Date().toISOString(),
 ): boolean {
   const envelope: PersistedEnvelope = {
     schemaVersion: CURRENT_SCHEMA_VERSION,
-    updatedAt: new Date().toISOString(),
+    updatedAt,
     data: state,
   };
 

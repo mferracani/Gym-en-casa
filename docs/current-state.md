@@ -2,8 +2,10 @@
 
 ## Fase
 
-MVP funcional local-first completado; conexión MCP pública para ChatGPT
-implementada y verificada localmente el 23 de agosto de 2026.
+MVP funcional local-first completado; conexión MCP pública para ChatGPT y
+sincronización opcional con Firebase Spark implementadas el 23 de agosto de
+2026; acceso real con Google y primera copia Firestore verificados el 24 de
+agosto de 2026.
 
 ## Architecture & Stack
 
@@ -16,11 +18,16 @@ implementada y verificada localmente el 23 de agosto de 2026.
 - Planificador diario determinístico en `src/domain/training/daily-plan.ts`: rota
   secciones por historial, respeta una ventana de recuperación de 48 horas,
   equipo disponible y plantillas editoriales existentes.
-- Persistencia `localStorage` mediante envelope versionado `v1`, validación manual, recuperación ante datos corruptos y migración desde `v0`.
+- Persistencia `localStorage` mediante envelope versionado `v2`, validación
+  manual, recuperación ante datos corruptos y migraciones desde `v0` y `v1`.
+- Copia remota opcional con Firebase Authentication y Cloud Firestore. El
+  frontend sigue leyendo y escribiendo primero en local; al conectar Google,
+  reconcilia el estado mutable por fecha y une las sesiones cerradas por ID.
+  Firestore guarda `state/current` separado de snapshots de sesión inmutables.
 - Agent Bridge MCP opcional y sólo local en `agent-bridge/`; expone herramientas
   acotadas para OpenClaw u otro cliente MCP y deriva toda propuesta al motor de
-  la app. Sin API de modelos, backend remoto, autenticación, Supabase, analítica
-  ni sincronización entre dispositivos.
+  la app. Sin API de modelos, Supabase ni analítica. Firebase es opcional y no
+  participa del Agent Bridge.
 - El comando de desarrollo enlaza Next a `127.0.0.1`; las rutas del puente se
   deshabilitan fuera de desarrollo y el MCP rechaza hosts no-loopback.
 - MCP público stateless en `/mcp`: publica sólo catálogo, una base editorial y
@@ -36,12 +43,20 @@ implementada y verificada localmente el 23 de agosto de 2026.
 - `Sesión guiada`: un ejercicio por vez con su secuencia visual, peso opcional en kg, repeticiones, registro/reapertura de series, pausa, navegación, confirmación de descarte, resumen y cierre. Los 14 ejercicios derivados del video de hombros, los 8 de pecho, los 8 de espalda y los 10 de abdominales incluyen `Ver movimiento` con su segmento de YouTube.
 - `Semana`: agenda recurrente editable; cada día admite cualquiera de los presets publicados, recuperación, descanso o contenido pendiente.
 - `Progreso`: historial de sesiones, series, repeticiones, volumen, último registro y máximo peso por ejercicio.
-- `Perfil`: nombre, inventario de equipo, advertencia sin rack, aviso de almacenamiento local y restablecimiento en dos pasos.
+- `Perfil`: nombre, inventario de equipo, advertencia sin rack, estado de
+  almacenamiento, conexión con Google, sincronización manual y restablecimiento
+  local en dos pasos.
 - Navegación real entre `Hoy`, `Semana`, `Ejercicios` y `Progreso`; `Perfil` permanece disponible en `/perfil`.
 
 ## Decisiones tomadas
 
 - El MVP es local-first: ningún servicio remoto es necesario para validar el ciclo de uso personal.
+- Firebase Spark es una capa opcional de backup y sincronización. No se vincula
+  facturación ni se habilitan Functions, Storage o Hosting; una falla remota no
+  bloquea el entrenamiento local.
+- La nube resuelve el perfil, la agenda y la sesión activa con el snapshot más
+  reciente. El historial se une por ID y las sesiones cerradas no admiten
+  actualización ni borrado desde el cliente.
 - “Sugerencia inteligente” no simula una IA: es un motor local determinístico,
   no usa API key y no genera costo adicional.
 - ChatGPT/OpenClaw no pueden iniciar ni sobrescribir una sesión de forma
@@ -74,10 +89,10 @@ implementada y verificada localmente el 23 de agosto de 2026.
 
 ## Verificación
 
-- `npm test`: 81 tests en verde, incluyendo migración segura de agenda,
+- `npm test`: 90 tests en verde, incluyendo migración segura de agenda,
   planificación diaria, validación del
   puente local, MCP stateless, control de orígenes, firma y vencimiento de
-  propuestas.
+  propuestas, configuración Firebase y reconciliación local/nube.
 - `npm run lint`: sin errores ni warnings.
 - `npm run typecheck`: TypeScript estricto en verde.
 - `npm run build`: build de producción exitoso con webpack; seis rutas de
@@ -88,6 +103,11 @@ implementada y verificada localmente el 23 de agosto de 2026.
 - QA de disponibilidad semanal en `390 × 844`: miércoles, viernes y domingo se
   muestran como descanso; sábado se muestra como opcional y continúa editable.
 - QA de Perfil: guardar nombre, recargar y restaurar; feedback de éxito visible.
+- QA de Perfil con Firebase configurado: panel de nube visible, estado local
+  intacto y CTA de Google disponible. Las reglas Firestore compilaron y fueron
+  publicadas; una lectura anónima real respondió `403`.
+- QA Firebase real en Chrome: se conectó Google, se creó la primera copia de
+  Firestore y, tras recargar, la sesión persistió con estado `Copia actualizada`.
 - QA responsive: `320 × 568`, `390 × 844` y `1280 × 900`, sin overflow horizontal.
 - Consola verificada en una pestaña nueva sin warnings ni errores.
 - QA de sugerencia diaria: selección de Hombros en `390 × 844`, 4 ejercicios,
@@ -121,7 +141,13 @@ implementada y verificada localmente el 23 de agosto de 2026.
   validación profesional de técnica, cues y agrupaciones.
 - La sesión personalizada no se guarda aún como preset reutilizable ni puede
   asignarse a un día; la semana permite asignar sólo los presets publicados.
-- No hay backup: limpiar el navegador o cambiar de dispositivo elimina el historial local.
+- La copia en Firebase sólo existe después de conectar Google; antes de eso,
+  limpiar el navegador elimina el historial local.
+- El MVP no resuelve edición simultánea en dos dispositivos: perfil, agenda y
+  sesión activa usan último snapshot. Para entrenar, usar un solo dispositivo a
+  la vez hasta incorporar detección explícita de conflictos.
+- Falta activar App Check antes de abrir la sincronización a usuarios externos
+  y agregar exportación/importación JSON como backup portable.
 - ChatGPT no recibe historial ni equipo local: debe pedir una sección explícita.
   La personalización final ocurre recién al abrir el enlace en la app.
 - Si `ENTRENA_CASA_PUBLIC_APP_URL` apunta a `localhost`, la Mac y la app local
@@ -141,4 +167,7 @@ implementada y verificada localmente el 23 de agosto de 2026.
 5. Desplegar `/mcp` en una URL HTTPS estable, cargar la clave privada en Vercel
    y registrar el endpoint en ChatGPT Developer Mode.
 6. Mantener el bridge con contexto personal únicamente en loopback; no publicarlo.
-7. Recién después decidir si hacen falta PWA/offline completo, sincronización o backend.
+7. Probar la reconciliación Firebase entre dos navegadores y activar App Check
+   antes de considerar la nube fuente principal.
+8. Recién después decidir si hacen falta PWA/offline completo u otros servicios
+   de backend.

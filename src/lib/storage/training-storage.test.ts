@@ -24,9 +24,13 @@ function createMemoryStorage() {
 test("guarda y recupera el envelope actual", () => {
   const storage = createMemoryStorage();
   const state = createInitialAppState();
+  const updatedAt = "2026-08-23T12:00:00.000Z";
 
-  assert.equal(saveTrainingState(storage, state), true);
-  assert.equal(loadTrainingState(storage, createInitialAppState).source, "stored");
+  assert.equal(saveTrainingState(storage, state, updatedAt), true);
+  const result = loadTrainingState(storage, createInitialAppState);
+
+  assert.equal(result.source, "stored");
+  assert.equal(result.updatedAt, updatedAt);
 });
 
 test("recupera el estado inicial ante JSON corrupto", () => {
@@ -36,6 +40,7 @@ test("recupera el estado inicial ante JSON corrupto", () => {
   const result = loadTrainingState(storage, createInitialAppState);
 
   assert.equal(result.source, "default");
+  assert.equal(result.updatedAt, null);
   assert.equal(result.warning, "corrupt");
 });
 
@@ -70,6 +75,7 @@ test("migra el envelope anterior a la versión vigente", () => {
   const result = loadTrainingState(storage, createInitialAppState);
 
   assert.equal(result.source, "migrated");
+  assert.equal(result.updatedAt, "2026-08-22T10:00:00.000Z");
   assert.equal(result.state.profile.id, "local-profile");
 });
 

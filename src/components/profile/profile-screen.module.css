@@ -34,6 +34,7 @@
 
 .loading,
 .storageNotice,
+.cloudPanel,
 .warning,
 .rackNotice,
 .dangerZone,
@@ -69,6 +70,63 @@
   color: var(--muted);
   font-size: 0.9rem;
   line-height: 1.45;
+}
+
+.cloudPanel {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  margin-top: 14px;
+  background: var(--white);
+}
+
+.cloudHeading {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.cloudHeading svg {
+  color: var(--accent);
+}
+
+.cloudHeading h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.cloudHeading p,
+.cloudStatus,
+.cloudStatusError,
+.cloudAccount {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.cloudHeading p,
+.cloudStatus {
+  color: var(--muted);
+}
+
+.cloudHeading p {
+  margin-top: 4px;
+}
+
+.cloudAccount {
+  color: var(--foreground);
+  font-weight: 720;
+  overflow-wrap: anywhere;
+}
+
+.cloudStatusError {
+  color: var(--state-danger);
+}
+
+.cloudActions {
+  display: grid;
+  gap: 10px;
 }
 
 .warning,
@@ -112,6 +170,8 @@
 
 .field input:focus-visible,
 .equipmentOption:has(input:focus-visible),
+.cloudPrimaryButton:focus-visible,
+.cloudSecondaryButton:focus-visible,
 .saveButton:focus-visible,
 .resetButton:focus-visible {
   outline: 3px solid var(--focus-ring);
@@ -170,6 +230,8 @@
 }
 
 .saveButton,
+.cloudPrimaryButton,
+.cloudSecondaryButton,
 .resetButton {
   display: inline-flex;
   align-items: center;
@@ -180,6 +242,36 @@
   border-radius: var(--radius-control);
   cursor: pointer;
   font-weight: 720;
+}
+
+.cloudPrimaryButton,
+.cloudSecondaryButton {
+  width: 100%;
+}
+
+.cloudPrimaryButton {
+  background: var(--foreground);
+  color: var(--white);
+}
+
+.cloudPrimaryButton:hover:not(:disabled) {
+  background: #3b3835;
+}
+
+.cloudSecondaryButton {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--foreground);
+}
+
+.cloudSecondaryButton:hover:not(:disabled) {
+  background: var(--surface);
+}
+
+.cloudPrimaryButton:disabled,
+.cloudSecondaryButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
 }
 
 .saveButton {
@@ -237,5 +329,9 @@
 
   .form {
     padding: 24px;
+  }
+
+  .cloudActions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

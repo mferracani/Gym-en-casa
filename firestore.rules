@@ -1,0 +1,48 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function ownsUserPath(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    function validStateDocument() {
+      return request.resource.data.keys().hasOnly([
+          'schemaVersion',
+          'updatedAt',
+          'profile',
+          'schedule',
+          'activeSession'
+        ])
+        && request.resource.data.schemaVersion is int
+        && request.resource.data.updatedAt is string
+        && request.resource.data.profile is map
+        && request.resource.data.schedule is list;
+    }
+
+    function validCompletedSession(sessionId) {
+      return request.resource.data.id == sessionId
+        && request.resource.data.completedAt is string
+        && request.resource.data.startedAt is string
+        && request.resource.data.exercises is list;
+    }
+
+    match /users/{userId}/state/current {
+      allow read: if ownsUserPath(userId);
+      allow create, update: if ownsUserPath(userId) && validStateDocument();
+      allow delete: if false;
+    }
+
+    match /users/{userId}/sessions/{sessionId} {
+      allow read: if ownsUserPath(userId);
+      allow create: if ownsUserPath(userId) && validCompletedSession(sessionId);
+      allow update: if ownsUserPath(userId)
+        && request.resource.data == resource.data;
+      allow delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

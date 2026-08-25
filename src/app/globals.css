@@ -635,10 +635,6 @@ a {
   line-height: 1.32;
 }
 
-.support-note--safety {
-  background: var(--surface);
-}
-
 .support-note--storage {
   grid-column: 1 / -1;
   border-color: var(--state-warning);

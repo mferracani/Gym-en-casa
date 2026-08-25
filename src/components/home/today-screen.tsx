@@ -364,20 +364,6 @@ export function TodayScreen() {
             </div>
           </article>
 
-          <article className="support-note support-note--safety">
-            <WarningCircle aria-hidden="true" size={25} weight="regular" />
-            <div>
-              <p>Seguridad</p>
-              <h2>
-                {displaySectionId === "chest-biceps"
-                  ? state.profile.equipment.rack
-                    ? "La rutina actual usa mancuernas aun cuando cargaste un rack."
-                    : todayPlan.safetyNotice
-                  : "Empezá con una carga cómoda y frená si aparece dolor o pinzamiento."}
-              </h2>
-            </div>
-          </article>
-
           {storageWarning ? (
             <article className="support-note support-note--storage" role="status">
               <WarningCircle aria-hidden="true" size={25} weight="regular" />

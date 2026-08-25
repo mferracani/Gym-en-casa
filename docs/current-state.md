@@ -18,8 +18,8 @@ agosto de 2026.
 - Planificador diario determinístico en `src/domain/training/daily-plan.ts`: rota
   secciones por historial, respeta una ventana de recuperación de 48 horas,
   equipo disponible y plantillas editoriales existentes.
-- Persistencia `localStorage` mediante envelope versionado `v2`, validación
-  manual, recuperación ante datos corruptos y migraciones desde `v0` y `v1`.
+- Persistencia `localStorage` mediante envelope versionado `v3`, validación
+  manual, recuperación ante datos corruptos y migraciones desde `v0`, `v1` y `v2`.
 - Copia remota opcional con Firebase Authentication y Cloud Firestore. El
   frontend sigue leyendo y escribiendo primero en local; al conectar Google,
   reconcilia el estado mutable por fecha y une las sesiones cerradas por ID.
@@ -40,9 +40,9 @@ agosto de 2026.
 
 - `Hoy`: fecha real, estado semanal derivado, mapa muscular, resumen visual de la rutina asignada, inicio, retoma y acceso a progreso luego del cierre. Incluye una sugerencia local configurable por sección, con 4–5 ejercicios, carga avanzada controlada, RIR y progresión explícita.
 - `Ejercicios`: biblioteca editable por `Pecho + bíceps`, `Espalda + tríceps`, `Hombros` y `Abdominales`; permite combinar ejercicios dentro de la sección activa, aplicar una sugerencia con confirmación visible y empezar una sesión respetando el orden de agregado. Si ya hay una sesión activa, la acción principal permite retomarla.
-- `Sesión guiada`: un ejercicio por vez con su secuencia visual, peso opcional en kg, repeticiones, registro/reapertura de series, pausa, navegación, confirmación de descarte, resumen y cierre. Los 14 ejercicios derivados del video de hombros, los 8 de pecho, los 8 de espalda y los 10 de abdominales incluyen `Ver movimiento` con su segmento de YouTube.
+- `Sesión guiada`: un ejercicio por vez con su secuencia visual, cronómetro persistente por timestamps, peso opcional en kg, repeticiones, registro/reapertura de series, pausa, navegación, confirmación de descarte, resumen y cierre. Pausar congela el tiempo activo y retomar descuenta la pausa aunque la app se haya cerrado. Los 14 ejercicios derivados del video de hombros, los 8 de pecho, los 8 de espalda y los 10 de abdominales incluyen `Ver movimiento` con su segmento de YouTube.
 - `Semana`: agenda recurrente editable; cada día admite cualquiera de los presets publicados, recuperación, descanso o contenido pendiente.
-- `Progreso`: historial de sesiones, series, repeticiones, volumen, último registro y máximo peso por ejercicio.
+- `Progreso`: mapa visual de actividad diaria de las últimas 12 semanas, historial de sesiones, series, repeticiones, volumen, último registro y máximo peso por ejercicio.
 - `Perfil`: nombre, inventario de equipo, advertencia sin rack, estado de
   almacenamiento, conexión con Google, sincronización manual y restablecimiento
   local en dos pasos.
@@ -74,7 +74,7 @@ agosto de 2026.
   edición semanal sigue disponible si la preferencia cambia.
 - El schema local v2 migra esa disponibilidad sin tocar perfil, sesión activa
   ni historial; sólo elimina del sábado la asignación seed anterior.
-- No se implementa temporizador: el descanso se muestra como referencia editorial.
+- El cronómetro mide tiempo activo de la sesión y persiste al cerrar la app. El descanso se mantiene como referencia editorial, sin cuenta regresiva automática.
 - No se implementa PWA todavía: faltan íconos aprobados y un service worker correctamente versionado para prometer offline completo.
 - Los assets fueron generados para el proyecto y centralizados mediante un mapping tipado; el press con barra que requiere rack queda fuera de la biblioteca editable.
 - Los videos fuente no se publican dentro del producto: el movimiento se reproduce con `youtube-nocookie.com`, sin autoplay, usando segmentos editoriales medidos.

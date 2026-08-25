@@ -67,10 +67,10 @@ entrenar ni conservar datos en el navegador.
 ## Recorridos disponibles
 
 - `/`: rutina y estado real de hoy.
-- `/entrenar`: sesión guiada, peso, repeticiones, pausa, retoma, resumen y cierre.
+- `/entrenar`: sesión guiada, cronómetro persistente, peso, repeticiones, pausa, retoma, resumen y cierre.
 - `/ejercicios`: catálogo por sección, sugerencias y selección libre en el orden elegido.
 - `/semana`: agenda recurrente editable de lunes a domingo.
-- `/progreso`: historial y métricas reconciliables por sesión y ejercicio.
+- `/progreso`: mapa de actividad de 12 semanas, historial y métricas reconciliables por sesión y ejercicio.
 - `/perfil`: nombre, inventario de equipo, restricción sin rack y reinicio local en dos pasos.
 
 ## Documentación

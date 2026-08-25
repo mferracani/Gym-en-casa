@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { getExerciseVisual } from "@/data/exercise-visuals";
 import { getExerciseMovement } from "@/data/exercise-movements";
 import { exerciseCatalog } from "@/data/training-catalog";
+import { getSessionElapsedSeconds } from "@/domain/training/session";
 import type { EquipmentId, SetLog } from "@/domain/training/types";
 import { useTraining } from "@/state/training/use-training";
 
@@ -43,6 +44,16 @@ function getSetDraft(set: SetLog, draft?: SetDraft): SetDraft {
   );
 }
 
+function formatElapsedTime(totalSeconds: number): string {
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  return [hours, minutes, seconds]
+    .map((value) => String(value).padStart(2, "0"))
+    .join(":");
+}
+
 export function WorkoutSessionScreen() {
   const router = useRouter();
   const {
@@ -60,6 +71,7 @@ export function WorkoutSessionScreen() {
   const [message, setMessage] = useState("");
   const [showDiscardConfirmation, setShowDiscardConfirmation] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
+  const [timerNow, setTimerNow] = useState(() => new Date().toISOString());
   const headingRef = useRef<HTMLHeadingElement>(null);
   const discardRef = useRef<HTMLButtonElement>(null);
 
@@ -91,6 +103,9 @@ export function WorkoutSessionScreen() {
     0,
   );
   const isPaused = session?.status === "paused";
+  const elapsedSeconds = session
+    ? getSessionElapsedSeconds(session, timerNow)
+    : 0;
   const showRackWarning =
     currentDefinition?.primaryMuscles.includes("Pecho") &&
     !state.profile.equipment.rack;
@@ -112,6 +127,18 @@ export function WorkoutSessionScreen() {
       discardRef.current?.focus();
     }
   }, [showDiscardConfirmation]);
+
+  useEffect(() => {
+    if (!session || isPaused) {
+      return;
+    }
+
+    const updateTimer = () => setTimerNow(new Date().toISOString());
+    updateTimer();
+    const intervalId = window.setInterval(updateTimer, 1000);
+
+    return () => window.clearInterval(intervalId);
+  }, [isPaused, session]);
 
   function updateDraft(setId: string, field: keyof SetDraft, value: string) {
     setDrafts((current) => {
@@ -242,6 +269,10 @@ export function WorkoutSessionScreen() {
               <dt>Volumen</dt>
               <dd>{volumeKg.toLocaleString("es-AR")} kg</dd>
             </div>
+            <div>
+              <dt>Tiempo activo</dt>
+              <dd>{formatElapsedTime(elapsedSeconds)}</dd>
+            </div>
           </dl>
 
           <p className={styles.summaryNote}>
@@ -281,24 +312,39 @@ export function WorkoutSessionScreen() {
             Ejercicio {session.currentExerciseIndex + 1} de {session.exercises.length}
           </p>
         </div>
-        <button
-          aria-label={isPaused ? "Retomar entrenamiento" : "Pausar entrenamiento"}
-          className={styles.pauseButton}
-          onClick={() => {
-            if (isPaused) {
-              resumeWorkout();
-              setMessage("Entrenamiento retomado.");
-              return;
-            }
+        <div className={styles.timerControls}>
+          <div
+            aria-label={`Tiempo activo ${formatElapsedTime(elapsedSeconds)}`}
+            className={styles.sessionTimer}
+            role="timer"
+          >
+            <Clock aria-hidden="true" size={18} weight="regular" />
+            <div>
+              <span>{isPaused ? "Tiempo pausado" : "Tiempo activo"}</span>
+              <strong>{formatElapsedTime(elapsedSeconds)}</strong>
+            </div>
+          </div>
+          <button
+            aria-label={isPaused ? "Retomar entrenamiento" : "Pausar entrenamiento"}
+            className={styles.pauseButton}
+            onClick={() => {
+              if (isPaused) {
+                resumeWorkout();
+                setTimerNow(new Date().toISOString());
+                setMessage("Entrenamiento retomado.");
+                return;
+              }
 
-            pauseWorkout();
-            setMessage("Entrenamiento pausado. Tus registros siguen guardados.");
-          }}
-          type="button"
-        >
-          {isPaused ? <Play aria-hidden="true" size={19} weight="fill" /> : <Pause aria-hidden="true" size={19} weight="fill" />}
-          <span>{isPaused ? "Retomar" : "Pausar"}</span>
-        </button>
+              pauseWorkout();
+              setTimerNow(new Date().toISOString());
+              setMessage("Entrenamiento pausado. El cronómetro quedó detenido.");
+            }}
+            type="button"
+          >
+            {isPaused ? <Play aria-hidden="true" size={19} weight="fill" /> : <Pause aria-hidden="true" size={19} weight="fill" />}
+            <span>{isPaused ? "Retomar" : "Pausar"}</span>
+          </button>
+        </div>
       </header>
 
       <section aria-labelledby="exercise-title" className={styles.exerciseStage}>
@@ -318,6 +364,7 @@ export function WorkoutSessionScreen() {
               alt={currentExerciseVisual.alt}
               className={styles.exerciseVisualImage}
               fill
+              loading="eager"
               sizes="(min-width: 720px) 560px, (max-width: 370px) calc(100vw - 32px), (max-width: 390px) calc(100vw - 40px), 350px"
               src={currentExerciseVisual.src}
             />
@@ -353,7 +400,7 @@ export function WorkoutSessionScreen() {
 
         <aside className={styles.restNote}>
           <Clock aria-hidden="true" size={21} weight="regular" />
-          <p>Descanso sugerido: <strong>{currentExercise.restSeconds} segundos</strong>. Sin temporizador automático.</p>
+          <p>Descanso sugerido: <strong>{currentExercise.restSeconds} segundos</strong>.</p>
         </aside>
 
         <div aria-label="Registro de series" className={styles.setList}>

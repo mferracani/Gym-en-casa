@@ -2,13 +2,21 @@
 
 import { ChartLineUp } from "@phosphor-icons/react/ChartLineUp";
 import { ClipboardText } from "@phosphor-icons/react/ClipboardText";
+import { Fire } from "@phosphor-icons/react/Fire";
 import { TrendUp } from "@phosphor-icons/react/TrendUp";
+import { useState } from "react";
 
 import {
   getExerciseProgress,
   getHistoricalSessionSummaries,
 } from "../../domain/training/exercise-progress.ts";
-import { deriveProgress } from "../../domain/training/selectors.ts";
+import {
+  deriveProgress,
+  getTrainingActivityWeeks,
+  type TrainingActivityDay,
+} from "../../domain/training/selectors.ts";
+import type { LocalDate } from "../../domain/training/types.ts";
+import { localDateFromDate } from "../../lib/date/local-date.ts";
 import { useTraining } from "../../state/training/use-training";
 import styles from "./progress-screen.module.css";
 
@@ -30,8 +38,42 @@ function formatDate(value: string): string {
   }).format(date);
 }
 
+function formatActivityDate(value: LocalDate): string {
+  const date = new Date(`${value}T12:00:00`);
+
+  return new Intl.DateTimeFormat("es-AR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  }).format(date);
+}
+
+function formatDuration(totalSeconds: number): string {
+  if (totalSeconds < 60) return "menos de 1 min";
+
+  const totalMinutes = Math.max(1, Math.round(totalSeconds / 60));
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  return hours > 0
+    ? `${hours} h${minutes > 0 ? ` ${minutes} min` : ""}`
+    : `${minutes} min`;
+}
+
+function describeActivity(day: TrainingActivityDay): string {
+  if (day.isFuture) return "Próximo día";
+  if (day.sessionCount === 0) return "Sin entrenamiento registrado";
+
+  const sessions = day.sessionCount === 1 ? "1 entrenamiento" : `${day.sessionCount} entrenamientos`;
+  const sets = day.completedSets === 1 ? "1 serie" : `${day.completedSets} series`;
+
+  return `${sessions} · ${sets} · ${formatDuration(day.durationSeconds)}`;
+}
+
 export function ProgressScreen() {
   const { isHydrated, state } = useTraining();
+  const [today] = useState(() => localDateFromDate(new Date()));
+  const [selectedDate, setSelectedDate] = useState<LocalDate>(today);
 
   if (!isHydrated) {
     return (
@@ -44,6 +86,13 @@ export function ProgressScreen() {
   const summary = deriveProgress(state.history);
   const sessions = getHistoricalSessionSummaries(state.history);
   const exercises = getExerciseProgress(state.history);
+  const activityWeeks = getTrainingActivityWeeks(state.history, today);
+  const activityDays = activityWeeks.flatMap((week) => week.days);
+  const selectedActivity =
+    activityDays.find((day) => day.date === selectedDate) ?? activityDays.at(-1);
+  const currentWeekTrainingDays = activityWeeks.at(-1)?.days.filter(
+    (day) => !day.isFuture && day.sessionCount > 0,
+  ).length ?? 0;
 
   return (
     <main className={styles.page}>
@@ -52,6 +101,75 @@ export function ProgressScreen() {
         <h1>Progreso</h1>
         <p>Registros completados en este dispositivo.</p>
       </header>
+
+
+      <section aria-labelledby="activity-title" className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <h2 id="activity-title">Actividad de entrenamiento</h2>
+          <span>
+            {currentWeekTrainingDays} {currentWeekTrainingDays === 1 ? "día" : "días"} esta semana
+          </span>
+        </div>
+
+        <div className={styles.activityCard}>
+          <div className={styles.activityLead}>
+            <Fire aria-hidden="true" size={22} weight="fill" />
+            <div>
+              <strong>Tu ritmo, día por día</strong>
+              <span>Últimas 12 semanas · más intensidad, más series</span>
+            </div>
+          </div>
+
+          <div className={styles.activityScroller}>
+            <div className={styles.activityChart}>
+              <div aria-hidden="true" className={styles.weekdayLabels}>
+                {["L", "M", "X", "J", "V", "S", "D"].map((label) => (
+                  <span key={label}>{label}</span>
+                ))}
+              </div>
+              <div aria-label="Entrenamientos de las últimas 12 semanas" className={styles.activityWeeks}>
+                {activityWeeks.map((week) => (
+                  <div className={styles.activityWeek} key={week.monday}>
+                    {week.days.map((day) => {
+                      const label = `${formatActivityDate(day.date)}: ${describeActivity(day)}`;
+
+                      return (
+                        <button
+                          aria-label={label}
+                          aria-pressed={selectedActivity?.date === day.date}
+                          className={`${styles.activityCell}${day.isFuture ? ` ${styles.activityCellFuture}` : ""}`}
+                          data-intensity={day.intensity}
+                          disabled={day.isFuture}
+                          key={day.date}
+                          onClick={() => setSelectedDate(day.date)}
+                          title={label}
+                          type="button"
+                        />
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.activityLegend}>
+            <span>Sin registro</span>
+            <i data-intensity="0" />
+            <i data-intensity="1" />
+            <i data-intensity="2" />
+            <i data-intensity="3" />
+            <span>Más series</span>
+          </div>
+
+          {selectedActivity ? (
+            <div aria-live="polite" className={styles.activityDetail}>
+              <strong>{formatActivityDate(selectedActivity.date)}</strong>
+              <span>{describeActivity(selectedActivity)}</span>
+            </div>
+          ) : null}
+        </div>
+      </section>
 
       {sessions.length === 0 ? (
         <section className={styles.empty} aria-labelledby="empty-progress-title">

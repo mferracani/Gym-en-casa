@@ -19,8 +19,47 @@
 }
 
 .header {
+  flex-wrap: wrap;
   padding-bottom: 18px;
   border-bottom: 1px solid var(--border);
+}
+
+.timerControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.sessionTimer {
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--foreground);
+  font-variant-numeric: tabular-nums;
+}
+
+.sessionTimer > div {
+  display: grid;
+  gap: 1px;
+}
+
+.sessionTimer span {
+  color: var(--muted);
+  font-size: 0.6rem;
+  font-weight: 720;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+}
+
+.sessionTimer strong {
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
 }
 
 .eyebrow {
@@ -410,7 +449,7 @@
 
 .summaryMetrics {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
   margin: 28px 0 0;
 }
@@ -511,6 +550,10 @@
   .setRow {
     grid-template-columns: 36px 130px 150px auto;
     justify-content: start;
+  }
+
+  .summaryMetrics {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 

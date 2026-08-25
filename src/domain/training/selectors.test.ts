@@ -2,7 +2,11 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { weeklyScheduleSeed } from "../../data/training-catalog.ts";
-import { deriveProgress, getWeekOverview } from "./selectors.ts";
+import {
+  deriveProgress,
+  getTrainingActivityWeeks,
+  getWeekOverview,
+} from "./selectors.ts";
 import type { CompletedSession } from "./types.ts";
 
 const completedSession: CompletedSession = {
@@ -61,4 +65,67 @@ test("la semana usa fechas locales de lunes a domingo y el historial manda", () 
   assert.equal(week[0]?.date, "2026-08-17");
   assert.equal(week[5]?.date, "2026-08-22");
   assert.equal(week[5]?.status, "completed");
+});
+
+test("arma doce semanas de actividad alineadas de lunes a domingo", () => {
+  const weeks = getTrainingActivityWeeks([], "2026-08-25");
+
+  assert.equal(weeks.length, 12);
+  assert.equal(weeks[0]?.days[0]?.date, "2026-06-08");
+  assert.equal(weeks[11]?.days[0]?.date, "2026-08-24");
+  assert.equal(weeks[11]?.days[6]?.date, "2026-08-30");
+  assert.equal(weeks[11]?.days[2]?.isFuture, true);
+});
+
+test("agrupa sesiones del mismo día y cuenta sólo series completadas", () => {
+  const secondSession: CompletedSession = {
+    ...completedSession,
+    id: "history-2",
+    exercises: [
+      {
+        ...completedSession.exercises[0]!,
+        sets: [
+          completedSession.exercises[0]!.sets[0]!,
+          {
+            ...completedSession.exercises[0]!.sets[1]!,
+            id: "set-pending",
+            status: "pending",
+            completedAt: null,
+          },
+        ],
+      },
+    ],
+  };
+  const weeks = getTrainingActivityWeeks(
+    [completedSession, secondSession],
+    "2026-08-25",
+  );
+  const saturday = weeks.flatMap((week) => week.days).find(
+    (day) => day.date === "2026-08-22",
+  );
+
+  assert.equal(saturday?.sessionCount, 2);
+  assert.equal(saturday?.completedSets, 3);
+  assert.equal(saturday?.intensity, 1);
+});
+
+test("eleva la intensidad visual a partir de diez series completadas", () => {
+  const manySets: CompletedSession = {
+    ...completedSession,
+    exercises: [
+      {
+        ...completedSession.exercises[0]!,
+        sets: Array.from({ length: 10 }, (_, index) => ({
+          ...completedSession.exercises[0]!.sets[0]!,
+          id: `set-${index + 1}`,
+        })),
+      },
+    ],
+  };
+  const weeks = getTrainingActivityWeeks([manySets], "2026-08-25");
+  const saturday = weeks.flatMap((week) => week.days).find(
+    (day) => day.date === "2026-08-22",
+  );
+
+  assert.equal(saturday?.intensity, 3);
 });

@@ -65,7 +65,10 @@ test("registra una serie, navega y pausa sin mutar el estado anterior", () => {
     type: "session/navigate",
     exerciseIndex: 1,
   });
-  const paused = trainingReducer(navigated, { type: "session/pause" });
+  const paused = trainingReducer(navigated, {
+    type: "session/pause",
+    pausedAt: "2026-08-22T10:06:00.000Z",
+  });
 
   assert.equal(
     started.activeSession?.exercises[0]?.sets[0]?.status,
@@ -77,6 +80,7 @@ test("registra una serie, navega y pausa sin mutar el estado anterior", () => {
   );
   assert.equal(navigated.activeSession?.currentExerciseIndex, 1);
   assert.equal(paused.activeSession?.status, "paused");
+  assert.equal(paused.activeSession?.pausedAt, "2026-08-22T10:06:00.000Z");
 });
 
 test("mueve una sesión terminada al historial y limpia la sesión activa", () => {

@@ -10,7 +10,7 @@ import type {
 } from "../../domain/training/types.ts";
 
 export const STORAGE_KEY = "entrena-casa:app-state";
-export const CURRENT_SCHEMA_VERSION = 2;
+export const CURRENT_SCHEMA_VERSION = 3;
 
 export interface PersistedEnvelope {
   schemaVersion: number;
@@ -69,7 +69,12 @@ function isSessionExercise(value: unknown): value is SessionExercise {
   );
 }
 
-function isActiveSession(value: unknown): value is ActiveSession {
+type LegacyActiveSession = Omit<
+  ActiveSession,
+  "pausedAt" | "pausedDurationSeconds"
+>;
+
+function isLegacyActiveSession(value: unknown): value is LegacyActiveSession {
   return (
     isRecord(value) &&
     isString(value.id) &&
@@ -81,6 +86,20 @@ function isActiveSession(value: unknown): value is ActiveSession {
     isFiniteNumber(value.currentExerciseIndex) &&
     Array.isArray(value.exercises) &&
     value.exercises.every(isSessionExercise)
+  );
+}
+
+function isActiveSession(value: unknown): value is ActiveSession {
+  if (!isLegacyActiveSession(value)) {
+    return false;
+  }
+
+  const withTimer = value as LegacyActiveSession & Record<string, unknown>;
+
+  return (
+    (withTimer.pausedAt === null || isString(withTimer.pausedAt)) &&
+    isFiniteNumber(withTimer.pausedDurationSeconds) &&
+    withTimer.pausedDurationSeconds >= 0
   );
 }
 
@@ -146,6 +165,22 @@ function isAppState(value: unknown): value is AppState {
   );
 }
 
+function isLegacyAppState(
+  value: unknown,
+): value is Omit<AppState, "activeSession"> & {
+  activeSession: LegacyActiveSession | null;
+} {
+  return (
+    isRecord(value) &&
+    isProfile(value.profile) &&
+    Array.isArray(value.schedule) &&
+    value.schedule.every(isScheduleDay) &&
+    (value.activeSession === null || isLegacyActiveSession(value.activeSession)) &&
+    Array.isArray(value.history) &&
+    value.history.every(isCompletedSession)
+  );
+}
+
 function migrateWeeklySchedule(
   schedule: readonly WeeklyScheduleDay[],
 ): WeeklyScheduleDay[] {
@@ -171,25 +206,50 @@ export function migratePersisted(raw: unknown): PersistedEnvelope | null {
     return null;
   }
 
-  if (raw.schemaVersion > CURRENT_SCHEMA_VERSION || !isAppState(raw.data)) {
+  if (raw.schemaVersion > CURRENT_SCHEMA_VERSION) {
     return null;
   }
 
   if (
     raw.schemaVersion !== 0 &&
     raw.schemaVersion !== 1 &&
+    raw.schemaVersion !== 2 &&
     raw.schemaVersion !== CURRENT_SCHEMA_VERSION
   ) {
     return null;
   }
 
-  const data =
-    raw.schemaVersion === CURRENT_SCHEMA_VERSION
-      ? raw.data
-      : {
-          ...raw.data,
-          schedule: migrateWeeklySchedule(raw.data.schedule),
-        };
+  if (raw.schemaVersion === CURRENT_SCHEMA_VERSION) {
+    if (!isAppState(raw.data)) {
+      return null;
+    }
+
+    return {
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      updatedAt: raw.updatedAt,
+      data: raw.data,
+    };
+  }
+
+  if (!isLegacyAppState(raw.data)) {
+    return null;
+  }
+
+  const data: AppState = {
+    ...raw.data,
+    schedule:
+      raw.schemaVersion === 0 || raw.schemaVersion === 1
+        ? migrateWeeklySchedule(raw.data.schedule)
+        : raw.data.schedule,
+    activeSession: raw.data.activeSession
+      ? {
+          ...raw.data.activeSession,
+          pausedAt:
+            raw.data.activeSession.status === "paused" ? raw.updatedAt : null,
+          pausedDurationSeconds: 0,
+        }
+      : null,
+  };
 
   return {
     schemaVersion: CURRENT_SCHEMA_VERSION,

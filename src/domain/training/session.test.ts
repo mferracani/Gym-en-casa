@@ -6,6 +6,9 @@ import {
   completeSet,
   createActiveSession,
   finishSession,
+  getSessionElapsedSeconds,
+  pauseSession,
+  resumeSession,
 } from "./session.ts";
 import type { Profile } from "./types.ts";
 
@@ -74,4 +77,68 @@ test("no permite finalizar una sesión sin series completadas", () => {
   });
 
   assert.throws(() => finishSession(session, "2026-08-22T10:01:00.000Z"));
+});
+
+test("calcula el cronómetro por timestamps aunque la app no esté abierta", () => {
+  const session = createActiveSession({
+    sessionId: "session-timer-1",
+    scheduledFor: "2026-08-22",
+    startedAt: "2026-08-22T10:00:00.000Z",
+    template: workoutTemplates[0],
+    exercises: exerciseCatalog,
+    profile,
+  });
+  const restored = JSON.parse(JSON.stringify(session));
+
+  assert.equal(
+    getSessionElapsedSeconds(restored, "2026-08-22T10:12:34.000Z"),
+    754,
+  );
+});
+
+test("pausar congela el cronómetro y retomar descuenta la pausa", () => {
+  const session = createActiveSession({
+    sessionId: "session-timer-2",
+    scheduledFor: "2026-08-22",
+    startedAt: "2026-08-22T10:00:00.000Z",
+    template: workoutTemplates[0],
+    exercises: exerciseCatalog,
+    profile,
+  });
+  const paused = pauseSession(session, "2026-08-22T10:05:00.000Z");
+
+  assert.equal(
+    getSessionElapsedSeconds(paused, "2026-08-22T10:15:00.000Z"),
+    300,
+  );
+
+  const resumed = resumeSession(paused, "2026-08-22T10:15:00.000Z");
+
+  assert.equal(
+    getSessionElapsedSeconds(resumed, "2026-08-22T10:20:00.000Z"),
+    600,
+  );
+});
+
+test("finalizar guarda la duración activa sin sumar pausas", () => {
+  const session = createActiveSession({
+    sessionId: "session-timer-3",
+    scheduledFor: "2026-08-22",
+    startedAt: "2026-08-22T10:00:00.000Z",
+    template: workoutTemplates[0],
+    exercises: exerciseCatalog,
+    profile,
+  });
+  const withSet = completeSet(session, {
+    exerciseId: "dumbbell-flat-press",
+    setId: "session-timer-3:dumbbell-flat-press:1",
+    actualReps: 10,
+    weightKg: null,
+    completedAt: "2026-08-22T10:04:00.000Z",
+  });
+  const paused = pauseSession(withSet, "2026-08-22T10:05:00.000Z");
+  const resumed = resumeSession(paused, "2026-08-22T10:15:00.000Z");
+  const completed = finishSession(resumed, "2026-08-22T10:30:00.000Z");
+
+  assert.equal(completed.durationSeconds, 1200);
 });

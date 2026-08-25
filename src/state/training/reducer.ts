@@ -1,4 +1,8 @@
-import { completeSet } from "../../domain/training/session.ts";
+import {
+  completeSet,
+  pauseSession,
+  resumeSession,
+} from "../../domain/training/session.ts";
 import type {
   ActiveSession,
   AppState,
@@ -25,8 +29,8 @@ export type TrainingAction =
       setId: string;
     }
   | { type: "session/navigate"; exerciseIndex: number }
-  | { type: "session/pause" }
-  | { type: "session/resume" }
+  | { type: "session/pause"; pausedAt: string }
+  | { type: "session/resume"; resumedAt: string }
   | { type: "session/discard" }
   | { type: "session/finish"; session: CompletedSession }
   | { type: "profile/update"; profile: Profile }
@@ -116,14 +120,18 @@ export function trainingReducer(
     }
 
     case "session/pause":
+      return state.activeSession
+        ? {
+            ...state,
+            activeSession: pauseSession(state.activeSession, action.pausedAt),
+          }
+        : state;
+
     case "session/resume":
       return state.activeSession
         ? {
             ...state,
-            activeSession: {
-              ...state.activeSession,
-              status: action.type === "session/pause" ? "paused" : "active",
-            },
+            activeSession: resumeSession(state.activeSession, action.resumedAt),
           }
         : state;
 

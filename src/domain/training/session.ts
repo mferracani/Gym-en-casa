@@ -58,6 +58,8 @@ export function createActiveSession({
     workoutName: template.name,
     startedAt,
     status: "active",
+    pausedAt: null,
+    pausedDurationSeconds: 0,
     currentExerciseIndex: 0,
     exercises: template.exercises.map((plannedExercise) => {
       const exercise = catalog.get(plannedExercise.exerciseId);
@@ -83,6 +85,67 @@ export function createActiveSession({
         })),
       };
     }),
+  };
+}
+
+function parseTimestamp(value: string, label: string): number {
+  const timestamp = Date.parse(value);
+
+  if (!Number.isFinite(timestamp)) {
+    throw new Error(`${label} no es válida.`);
+  }
+
+  return timestamp;
+}
+
+export function getSessionElapsedSeconds(
+  session: ActiveSession,
+  now: string,
+): number {
+  const startedAtMs = parseTimestamp(session.startedAt, "La fecha de inicio");
+  const effectiveEnd =
+    session.status === "paused" && session.pausedAt ? session.pausedAt : now;
+  const endAtMs = parseTimestamp(effectiveEnd, "La fecha del cronómetro");
+
+  return Math.max(
+    0,
+    Math.floor((endAtMs - startedAtMs) / 1000) - session.pausedDurationSeconds,
+  );
+}
+
+export function pauseSession(
+  session: ActiveSession,
+  pausedAt: string,
+): ActiveSession {
+  if (session.status === "paused") {
+    return session;
+  }
+
+  parseTimestamp(pausedAt, "La fecha de pausa");
+
+  return { ...session, status: "paused", pausedAt };
+}
+
+export function resumeSession(
+  session: ActiveSession,
+  resumedAt: string,
+): ActiveSession {
+  if (session.status === "active") {
+    return session;
+  }
+
+  const resumedAtMs = parseTimestamp(resumedAt, "La fecha de reanudación");
+  const pausedAtMs = session.pausedAt
+    ? parseTimestamp(session.pausedAt, "La fecha de pausa")
+    : resumedAtMs;
+
+  return {
+    ...session,
+    status: "active",
+    pausedAt: null,
+    pausedDurationSeconds:
+      session.pausedDurationSeconds +
+      Math.max(0, Math.floor((resumedAtMs - pausedAtMs) / 1000)),
   };
 }
 
@@ -141,13 +204,6 @@ export function finishSession(
     throw new Error("Registrá al menos una serie antes de finalizar.");
   }
 
-  const startedAtMs = Date.parse(session.startedAt);
-  const completedAtMs = Date.parse(completedAt);
-
-  if (!Number.isFinite(startedAtMs) || !Number.isFinite(completedAtMs)) {
-    throw new Error("Las fechas de sesión no son válidas.");
-  }
-
   return {
     id: session.id,
     scheduledFor: session.scheduledFor,
@@ -156,6 +212,6 @@ export function finishSession(
     startedAt: session.startedAt,
     exercises: session.exercises,
     completedAt,
-    durationSeconds: Math.max(0, Math.floor((completedAtMs - startedAtMs) / 1000)),
+    durationSeconds: getSessionElapsedSeconds(session, completedAt),
   };
 }

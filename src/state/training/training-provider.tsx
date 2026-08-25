@@ -423,11 +423,11 @@ export function TrainingProvider({ children }: { children: ReactNode }) {
   }, [dispatch]);
 
   const pauseWorkout = useCallback(() => {
-    dispatch({ type: "session/pause" });
+    dispatch({ type: "session/pause", pausedAt: new Date().toISOString() });
   }, [dispatch]);
 
   const resumeWorkout = useCallback(() => {
-    dispatch({ type: "session/resume" });
+    dispatch({ type: "session/resume", resumedAt: new Date().toISOString() });
   }, [dispatch]);
 
   const discardWorkout = useCallback(() => {

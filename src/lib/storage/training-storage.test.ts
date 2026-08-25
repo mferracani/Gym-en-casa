@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { createInitialAppState } from "../../data/training-catalog.ts";
+import { exerciseCatalog, workoutTemplates } from "../../data/training-catalog.ts";
+import { createActiveSession } from "../../domain/training/session.ts";
 import {
   CURRENT_SCHEMA_VERSION,
   loadTrainingState,
@@ -130,4 +132,38 @@ test("migra la agenda guardada sin tocar el resto del estado", () => {
     { weekday: 6, kind: "strength" },
     { weekday: 7, kind: "rest" },
   ]);
+});
+
+test("migra una sesión activa anterior con estado inicial de cronómetro", () => {
+  const storage = createMemoryStorage();
+  const initial = createInitialAppState();
+  const legacySession = JSON.parse(
+    JSON.stringify(
+      createActiveSession({
+        sessionId: "legacy-active-session",
+        scheduledFor: "2026-08-25",
+        startedAt: "2026-08-25T10:00:00.000Z",
+        template: workoutTemplates[0],
+        exercises: exerciseCatalog,
+        profile: initial.profile,
+      }),
+    ),
+  );
+  delete legacySession.pausedAt;
+  delete legacySession.pausedDurationSeconds;
+
+  storage.setItem(
+    "entrena-casa:app-state",
+    JSON.stringify({
+      schemaVersion: 2,
+      updatedAt: "2026-08-25T10:03:00.000Z",
+      data: { ...initial, activeSession: legacySession },
+    }),
+  );
+
+  const result = loadTrainingState(storage, createInitialAppState);
+
+  assert.equal(result.source, "migrated");
+  assert.equal(result.state.activeSession?.pausedAt, null);
+  assert.equal(result.state.activeSession?.pausedDurationSeconds, 0);
 });

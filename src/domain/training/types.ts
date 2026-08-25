@@ -86,12 +86,17 @@ export interface ActiveSession {
   workoutName: string;
   startedAt: string;
   status: SessionStatus;
+  pausedAt: string | null;
+  pausedDurationSeconds: number;
   currentExerciseIndex: number;
   exercises: SessionExercise[];
 }
 
 export interface CompletedSession
-  extends Omit<ActiveSession, "status" | "currentExerciseIndex"> {
+  extends Omit<
+    ActiveSession,
+    "status" | "currentExerciseIndex" | "pausedAt" | "pausedDurationSeconds"
+  > {
   completedAt: string;
   durationSeconds: number;
 }
